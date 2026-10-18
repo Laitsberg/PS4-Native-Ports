@@ -23,7 +23,8 @@ import zipfile
 from struct import unpack_from
 
 import userdata
-from userdata import DataError, SERIAL, SLOT_PREFIX
+import userdata
+from userdata import DataError, SLOT_PREFIX
 
 _FROZEN = bool(getattr(sys, 'frozen', False))
 _SCRIPTS = (Path(sys.executable).resolve().parent if _FROZEN else Path(__file__).resolve().parent.parent) / 'scripts'
@@ -40,6 +41,12 @@ PROBE_NAMES = ('tlg-probe', 'tlg-probe.exe')
 STAMP_RE = re.compile(r'^\d{8}-\d{6}(-\d+)?$')
 UID_RE = re.compile(r'^[A-Za-z0-9_-]{1,32}$')
 SLOT_RE = re.compile(r'^' + SLOT_PREFIX + r'[A-Za-z0-9_]{1,40}$')
+# Other games (games.py) name their slots their own way: any plain folder name, never a path.
+OTHER_SLOT_RE = re.compile(r'^[A-Za-z0-9_-]{1,64}$')
+
+
+def slot_name_ok(name):
+    return bool((SLOT_RE if userdata.SERIAL == 'CUSA00223' else OTHER_SLOT_RE).match(name))
 
 
 # --------------------------------------------------------------------------- param.bin / .sfo
@@ -175,9 +182,9 @@ def list_slots(user_dir):
 
 def slot_paths(user_dir, slot_id):
     uid, _, name = str(slot_id).partition('/')
-    if not UID_RE.match(uid) or not SLOT_RE.match(name):
+    if not UID_RE.match(uid) or not slot_name_ok(name):
         raise SaveError('save_bad_slot', slot_id)
-    game = Path(user_dir) / 'savedata' / uid / SERIAL
+    game = Path(user_dir) / 'savedata' / uid / userdata.SERIAL
     return game / name, game / (name + '.sce_sys')
 
 
@@ -379,7 +386,7 @@ def _classify(parts):
             uid, serial, slotdir = rest[1], rest[2], rest[3]
             is_sys = slotdir.endswith('.sce_sys')
             slot = slotdir[:-8] if is_sys else slotdir
-            if serial == SERIAL and UID_RE.match(uid) and SLOT_RE.match(slot):
+            if serial == userdata.SERIAL and UID_RE.match(uid) and slot_name_ok(slot):
                 return uid, slot, is_sys, rest[4:]
     return None
 
@@ -525,7 +532,7 @@ def import_plan(user_dir, plan, replace=(), target_uid=None, running=None):
                 zf.close()
         for (uid, slot), sid, entry in todo:
             tuid = sid.split('/', 1)[0]
-            game = user_dir / 'savedata' / tuid / SERIAL
+            game = user_dir / 'savedata' / tuid / userdata.SERIAL
             game.mkdir(parents=True, exist_ok=True)
             replaced = []
             try:
@@ -571,7 +578,7 @@ def export_zip(user_dir, dest, slot_ids=None):
                 for base in (folder, sys_dir):
                     for p in sorted(base.rglob('*')) if base.is_dir() else []:
                         if p.is_file():
-                            arc = '/'.join(('savedata', s['user'], SERIAL, base.name, *p.relative_to(base).parts))
+                            arc = '/'.join(('savedata', s['user'], userdata.SERIAL, base.name, *p.relative_to(base).parts))
                             zf.write(p, arc)
         os.replace(tmp, dest)
     except OSError as error:

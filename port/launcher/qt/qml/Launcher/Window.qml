@@ -12,6 +12,6 @@ Window {
     minimumHeight: 640
     visible: true
     color: Theme.bg
-    title: "inFAMOUS Second Son — PC"
+    title: Backend.gameTitle + " — PC"
     Main { id: main; anchors.fill: parent }
 }

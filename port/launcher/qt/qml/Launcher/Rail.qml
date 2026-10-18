@@ -22,10 +22,10 @@ Rectangle {
             width: parent.width; height: 76
             Column {
                 x: 6; y: 2; spacing: 2
-                Text { text: "inFAMOUS"; color: "#ffffff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 34
+                Text { text: Backend.railTitle; color: "#ffffff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 34
                        font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase
                        font.letterSpacing: 1.7; lineHeight: 0.95 }
-                Text { text: "Second Son · PC"; color: Theme.smoke; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 }); font.pixelSize: 15
+                Text { text: Backend.railSubtitle; color: Theme.smoke; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 }); font.pixelSize: 15
                        font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 4.8 }
             }
         }

@@ -18,7 +18,15 @@ from pathlib import Path
 import shutil
 import time
 
-SERIAL = 'CUSA00223'
+SERIAL = 'CUSA00223'   # the save-data folder of the selected game; set_serial() switches it (games.py)
+
+
+def set_serial(serial):
+    """Points the save tools at another game's savedata/<user>/<serial>/ folder."""
+    global SERIAL
+    if serial:
+        SERIAL = serial
+
 SLOT_PREFIX = 'infamousss'
 ENV_NAMES = ('ISS_USER_DIR', 'TLG_USER_DIR')
 # What a data folder holds that is worth carrying over. The shader cache (cache/) is left out: it is

@@ -234,6 +234,7 @@ class Backend(QObject):
         self.refresh()
 
     def refresh(self):
+        tlg_run.current_game(self.settings)   # saves and caches follow the selected game
         self._pad = self.probe('pad', logic.detect_pad)
         self.measure_cache()
         self._compute_chips()
@@ -399,6 +400,19 @@ class Backend(QObject):
     @Property(str, notify=gameDirChanged)
     def gameDir(self):
         return self.settings.get('game_dir', '')
+
+    @Property(str, notify=gameDirChanged)
+    def gameTitle(self):
+        """Full name of the game in the selected folder (games.py), for the window title."""
+        return logic.tlg_run.current_game(self.settings).title
+
+    @Property(str, notify=gameDirChanged)
+    def railTitle(self):
+        return logic.tlg_run.current_game(self.settings).rail[0]
+
+    @Property(str, notify=gameDirChanged)
+    def railSubtitle(self):
+        return logic.tlg_run.current_game(self.settings).rail[1]
 
     @Property(str, notify=gameDirChanged)
     def artSource(self):

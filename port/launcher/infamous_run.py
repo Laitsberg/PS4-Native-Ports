@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0-or-later
-"""Prepare and run inFAMOUS Second Son (CUSA00223) through the native loader.
+"""Prepare and run a supported PS4 game (inFAMOUS Second Son, inFAMOUS First Light, J-STARS Victory
+VS+; games.py has the profiles) through the native loader.
 
 Shared by the command line (run_infamous.sh -> `infamous_run.py [seconds]`) and the launcher
 window (infamous_launcher.py), so both start the game the same way:
@@ -19,6 +20,7 @@ import sys
 import time
 
 import backports_table
+import games
 import logtail
 import shader_cache
 import padsettings
@@ -210,8 +212,21 @@ TEXT = {
     'unreadable': ('{detail} could not be read (damaged, incomplete or still encrypted): dump it again from the PS4.',
                    'Não deu para ler o {detail} (danificado, incompleto ou ainda criptografado): faça o dump de novo no PS4.'),
 }
+TEXT['untested_eboot'] = (
+    'This eboot.bin is not a build the port was tested with ({detail}). The game may still run; if it '
+    'stops, the log names the first unsupported system function.',
+    'Este eboot.bin não é uma versão testada com o port ({detail}). O jogo ainda pode rodar; se parar, '
+    'o log mostra a primeira função do sistema sem suporte.')
 # Problems that are reported but do not block Play.
-WARNINGS = {'other_eboot'}
+WARNINGS = {'other_eboot', 'untested_eboot'}
+
+
+def current_game(settings):
+    """The profile (games.py) of the game folder in the settings; also points the save tools at its
+    save-data folder."""
+    profile = games.detect(settings.get('game_dir', '') if settings else '')
+    userdata.set_serial(profile.save_serial)
+    return profile
 
 
 def message(key, portuguese=None, **fmt):
@@ -276,8 +291,13 @@ def check_game(game_dir):
     else:
         try:
             entry, size = _cached(eboot, 'layout', eboot_layout)
-            if (entry, size) != EBOOT_107:
-                problems.append(('other_eboot', f'entry={entry:#x}, image={size:,} bytes'))
+            profile = games.detect(game_dir)
+            if not games.eboot_status(profile, (entry, size))[0]:
+                detail = f'entry={entry:#x}, image={size:,} bytes'
+                if profile is games.SECOND_SON:
+                    problems.append(('other_eboot', detail))
+                else:
+                    problems.append(('untested_eboot', f'{profile.title}: {detail}'))
         except (OSError, ValueError, KeyError, StopIteration) as error:
             problems.append(('unreadable', f'eboot.bin ({error})'))
     for module in MODULES:
@@ -598,8 +618,9 @@ def build_env(settings, extra=None):
         env['ISS_UI_LANG'] = settings['ui_language']
     env['ISS_CONFIG'] = str(user_dir() / 'tlg.ini')
     # Window name, app id (matches infamous-pc.desktop for Alt+Tab and the dock) and icon.
-    env.setdefault('ISS_APP_NAME', 'inFAMOUS Second Son')
-    env.setdefault('ISS_APP_ID', 'infamous-pc')
+    profile = current_game(settings)
+    env.setdefault('ISS_APP_NAME', profile.title)
+    env.setdefault('ISS_APP_ID', 'infamous-pc' if profile is games.SECOND_SON else f'{profile.key}-pc')
     icon = window_icon(settings)
     if icon:
         env.setdefault('ISS_WINDOW_ICON', str(icon))

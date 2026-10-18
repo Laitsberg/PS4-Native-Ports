@@ -22,6 +22,7 @@ import subprocess
 import threading
 import time
 
+import games
 import infamous_run as tlg_run
 import shader_cache
 
@@ -126,6 +127,8 @@ def decide(settings, version=None, print_fingerprint=None):
     if not settings.get('precompile_shaders', True):
         return 'off', 'option off'
     game = settings.get('game_dir') or ''
+    if game and not games.detect(game).xpps_jobs:
+        return 'nogame', 'shader jobs are made for the Second Son engine tables only'
     root = xpps_root(game) if game else None
     if root is None:
         return 'nogame', 'no .xpps folder'
