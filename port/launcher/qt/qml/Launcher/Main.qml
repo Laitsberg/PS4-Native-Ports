@@ -7,8 +7,8 @@ Rectangle {
     color: Theme.bg
     implicitWidth: 1120
     implicitHeight: 700
-    property int current: 0
-    readonly property var pages: ["play", "graphics", "controls", "fixes", "saves", "guides", "support", "updates", "advanced", "mods"]
+    property int current: Backend.gameDir !== "" ? 1 : 0
+    readonly property var pages: ["library", "play", "graphics", "controls", "fixes", "saves", "guides", "support", "updates", "advanced", "mods"]
     property bool animate: true
 
     Rail {
@@ -35,7 +35,7 @@ Rectangle {
                 Loader {
                     anchors.fill: parent
                     sourceComponent: { var k = root.pages[index]
-                        return k === "play" ? home : k === "graphics" ? graphics : k === "controls" ? controls
+                        return k === "library" ? library : k === "play" ? home : k === "graphics" ? graphics : k === "controls" ? controls
                              : k === "fixes" ? fixes : k === "saves" ? saves : k === "guides" ? guides
                              : k === "support" ? support : k === "updates" ? updates : k === "advanced" ? advanced
                              : k === "mods" ? mods : soon }
@@ -44,7 +44,8 @@ Rectangle {
             }
         }
     }
-    Component { id: home; HomePage { animate: root.animate; onOpenFixes: root.current = 3; onOpenSaves: root.current = 4 } }
+    Component { id: library; LibraryPage { onOpenPlay: root.current = root.pages.indexOf("play") } }
+    Component { id: home; HomePage { animate: root.animate; onOpenFixes: root.current = root.pages.indexOf("fixes"); onOpenSaves: root.current = root.pages.indexOf("saves") } }
     Component { id: graphics; GraphicsPage { } }
     Component { id: controls
         ControlsPage { guidesShown: root.pages.indexOf("guides") >= 0

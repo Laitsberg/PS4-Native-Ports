@@ -36,7 +36,7 @@ QtObject {
     readonly property color video: "#4d8bff"  // Graphics
     readonly property color neon: "#ff3d9a"   // Controls
     readonly property color cyan: "#19e3ff"   // Support
-    readonly property var accents: ({ play: "#ff6a2b", graphics: "#4d8bff", controls: "#ff3d9a",
+    readonly property var accents: ({ library: "#b48cff", play: "#ff6a2b", graphics: "#4d8bff", controls: "#ff3d9a",
                                       fixes: "#ff6a2b", saves: "#35d07f", guides: "#ff3d9a", support: "#19e3ff",
                                       updates: "#f5c400", advanced: "#8e7bff", mods: "#2bd9c4" })
     // type
@@ -46,6 +46,7 @@ QtObject {
     readonly property int heroHeight: 320
     // line icons, 24x24 viewBox (circles written as arcs)
     readonly property var icons: ({
+        library: "M4 4h6v6H4z M14 4h6v6h-6z M4 14h6v6H4z M14 14h6v6h-6z",
         play: "M7 4.5v15l12-7.5z",
         graphics: "M4 7h10M18 7h2M4 17h2M10 17h10 M18 7a2 2 0 1 0-4 0a2 2 0 1 0 4 0 M10 17a2 2 0 1 0-4 0a2 2 0 1 0 4 0",
         controls: "M7 8h10a4 4 0 0 1 4 4l-1 5a2 2 0 0 1-3.4 1L15 16H9l-1.6 2A2 2 0 0 1 4 17l-1-5a4 4 0 0 1 4-4z",

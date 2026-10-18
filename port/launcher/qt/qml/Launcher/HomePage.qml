@@ -58,7 +58,7 @@ Item {
             spacing: 6
             Text { text: Backend.heroKicker; color: page.accent; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 }); font.pixelSize: 15
                    font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 4.5 }
-            Text { text: Theme.tr("hero_tagline"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 64
+            Text { text: Backend.heroTagline; width: hero.width - 420; wrapMode: Text.WordWrap; maximumLineCount: 2; elide: Text.ElideRight; color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 64
                    font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 3.2
                    lineHeight: 0.95; lineHeightMode: Text.ProportionalHeight }
         }
@@ -168,6 +168,7 @@ Item {
                 Repeater { model: Backend.chips; Chip { text: modelData.text; level: modelData.level } }
             }
             Column {   // light glare (occlusion): same file/env path as the other switches
+                visible: Backend.isSecondSon
                 width: parent.width; spacing: 6
                 Row {
                     spacing: 12

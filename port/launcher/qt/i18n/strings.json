@@ -436,5 +436,15 @@
   "adv_nothing": {"en": "Nothing found.", "pt": "Nada encontrado."},
   "adv_auto": {"en": "automatic", "pt": "automático"},
   "adv_profile_default": {"en": "All defaults", "pt": "Tudo no padrão"},
-  "adv_profile_custom": {"en": "{n} changed", "pt": "{n} alterado(s)"}
+  "adv_profile_custom": {"en": "{n} changed", "pt": "{n} alterado(s)"},
+  "chip_game_ok_other": {"en": "{game} · folder OK", "pt": "{game} · pasta OK"},
+  "nav_library": {"en": "Library", "pt": "Biblioteca"},
+  "library_title": {"en": "Your games", "pt": "Seus jogos"},
+  "library_hint": {"en": "Add the folder of each game you dumped from your PS4 (the one with eboot.bin). Click a game to make it the one Play starts.", "pt": "Adicione a pasta de cada jogo que você copiou do seu PS4 (a que tem o eboot.bin). Clique num jogo para que o Jogar o inicie."},
+  "library_add": {"en": "Add a game folder", "pt": "Adicionar pasta de jogo"},
+  "library_remove": {"en": "Remove from library", "pt": "Tirar da biblioteca"},
+  "library_selected": {"en": "Selected", "pt": "Selecionado"},
+  "library_missing": {"en": "Folder not found", "pt": "Pasta não encontrada"},
+  "library_untested": {"en": "Untested", "pt": "Não testado"},
+  "brand": {"en": "PS4 Native Ports", "pt": "PS4 Native Ports"}
 }

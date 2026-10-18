@@ -85,3 +85,21 @@ def eboot_status(game, layout):
     """(tested, label): whether this eboot layout (entry, image size) is a tested build."""
     label = game.tested.get(tuple(layout))
     return (label is not None, label or '')
+
+
+def info(game_dir):
+    """What the library shows about a game folder: {path, title, title_id, version, cover, art, key}.
+    cover/art are the dump's own sce_sys/icon0.png and pic1.png (never shipped), '' when absent."""
+    game = Path(game_dir)
+    values = _sfo(game_dir) or {}
+    profile = detect(game_dir)
+    def image(*names):
+        for name in names:
+            if (game / 'sce_sys' / name).is_file():
+                return str(game / 'sce_sys' / name)
+        return ''
+    return {'path': str(game), 'title': profile.title, 'key': profile.key,
+            'title_id': str(values.get('TITLE_ID') or ''),
+            'version': str(values.get('APP_VER') or values.get('VERSION') or '').lstrip('0') or '',
+            'cover': image('icon0.png'), 'art': image('pic1.png', 'pic0.png'),
+            'known': profile in KNOWN, 'second_son': profile is SECOND_SON}

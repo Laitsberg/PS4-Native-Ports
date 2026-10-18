@@ -10,18 +10,20 @@ Rectangle {
     Rectangle { anchors.right: parent.right; width: 1; height: parent.height; color: Theme.railLine }
 
     readonly property var entries: [
-        { key: "play", label: "nav_play" }, { key: "graphics", label: "nav_graphics" },
+        { key: "library", label: "nav_library" }, { key: "play", label: "nav_play" }, { key: "graphics", label: "nav_graphics" },
         { key: "controls", label: "nav_controls" }, { key: "fixes", label: "nav_fixes" },
         { key: "saves", label: "nav_saves" }, { key: "guides", label: "nav_guides" },
         { key: "support", label: "nav_support" }, { key: "updates", label: "nav_updates" },
         { key: "advanced", label: "nav_advanced" }, { key: "mods", label: "nav_mods" } ]
 
     Column {
-        x: 16; y: 22; width: parent.width - 33; spacing: 3
+        x: 16; y: 18; width: parent.width - 33; spacing: 2
         Item {
-            width: parent.width; height: 76
+            width: parent.width; height: 92
             Column {
                 x: 6; y: 2; spacing: 2
+                Text { text: Theme.tr("brand"); color: Theme.accents.library; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 }); font.pixelSize: 11
+                       font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 3.2; bottomPadding: 4 }
                 Text { text: Backend.railTitle; color: "#ffffff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 34
                        font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase
                        font.letterSpacing: 1.7; lineHeight: 0.95 }
@@ -32,6 +34,9 @@ Rectangle {
         Repeater {
             model: root.entries
             NavButton {
+                // Controller guides open from the Controls screen; Mods (cheat files) are Second Son's.
+                readonly property bool shown: modelData.key !== "guides" && (modelData.key !== "mods" || Backend.isSecondSon)
+                visible: shown; height: shown ? 42 : 0
                 width: parent.width
                 label: Theme.tr(modelData.label)
                 iconPath: Theme.icons[modelData.key]

@@ -147,7 +147,7 @@ def saves_shots(app, backend, out):
         backend.setLang('pt_BR' if pt else 'en_US')
         backend.reload_user()
         backend.saves.scan()
-        app.go(4)
+        app.go(5)
         app.grab(out / f'saves-{lang}.png')
         backend.saves.scrollRequested.emit(620)
         app.grab(out / f'saves-{lang}-fim.png')
@@ -157,17 +157,17 @@ def saves_shots(app, backend, out):
     backend.saves.say(backend.t_('saves_dir_changed', path=str(sandbox / 'port' / 'user')), 'good')
     backend.reload_user()
     backend.saves.scan()
-    app.go(4)
+    app.go(5)
     app.grab(out / 'saves-portatil-en.png')
     backend.saves.dismissMessage()
     backend.setLang('pt_BR')
-    app.go(0)
+    app.go(1)
     app.grab(out / 'inicio-aviso-saves.png')
     # confirmation card
     userdata.set_user_dir(documents)
     backend.reload_user()
     backend.saves.askDelete('1/infamousssUser1')
-    app.go(4)
+    app.go(5)
     app.grab(out / 'saves-confirmar.png')
     backend.saves.answer('cancel')
 
@@ -180,7 +180,7 @@ def screens_a_shots(app, backend, out):
         backend.setLang('pt_BR' if pt else 'en_US')
         backend.settings['key_map'] = ''
         graphics.applyPreset('balanced')
-        app.go(1)
+        app.go(2)
         app.grab(out / f'graficos-{lang}.png')
         graphics.scrollRequested.emit(760)
         app.grab(out / f'graficos-{lang}-meio.png')
@@ -189,7 +189,7 @@ def screens_a_shots(app, backend, out):
         graphics.scrollRequested.emit(0)
         graphics.applyPreset('ps4')
         graphics.setValue('s:vram_budget_mb', '6000')      # above 90% of the card: the warning
-        app.go(1)
+        app.go(2)
         app.grab(out / f'graficos-{lang}-ps4.png')
         graphics.scrollRequested.emit(2150)
         app.grab(out / f'graficos-{lang}-vram.png')
@@ -203,7 +203,7 @@ def screens_a_shots(app, backend, out):
         controls.setValue('m:mouse_sensitivity', '1.5')
         controls.setDraft('cross=Q,r2=Mouse Left|F')
         controls.applyKeyMap()
-        app.go(2)
+        app.go(3)
         app.grab(out / f'controles-{lang}.png')
         controls.scrollRequested.emit(700)
         app.grab(out / f'controles-{lang}-meio.png')
@@ -240,7 +240,7 @@ def support_shots(app, backend, out):
         support.setStep(0)
         support.selectLog(0)
         wait()
-        app.go(6)
+        app.go(7)
         app.grab(out / f'suporte-{lang}.png')
         support.scrollRequested.emit(900)
         app.grab(out / f'suporte-{lang}-passo1.png')
@@ -256,14 +256,14 @@ def support_shots(app, backend, out):
         support.dismissMessage()
         support.setStep(0)
         support.setDescription('')
-        app.go(7)
+        app.go(8)
         app.grab(out / f'atualizacoes-{lang}-antes.png')
         updates.check()
         wait()
         app.grab(out / f'atualizacoes-{lang}-nova.png')
-        app.go(0)
+        app.go(1)
         app.grab(out / f'inicio-{lang}-ponto.png')
-        app.go(7)
+        app.go(8)
     updates.probes['version'] = lambda: 'v2026.10.15-61e8942'
     updates.changed.emit()
     app.grab(out / 'atualizacoes-en-atual.png')
@@ -274,7 +274,7 @@ def support_shots(app, backend, out):
     app.grab(out / 'atualizacoes-en-offline.png')
     backend.setLang('pt_BR')
     app.grab(out / 'atualizacoes-pt-offline.png')
-    app.go(0)
+    app.go(1)
 
 
 def main(out):
@@ -282,7 +282,7 @@ def main(out):
     out.mkdir(parents=True, exist_ok=True)
     backend = demo_backend(with_art='--art' in sys.argv)
     app = App(backend=backend)
-    names = ['inicio', 'graficos', 'controles', 'correcoes', 'saves', 'guias', 'suporte', 'atualizacoes', 'avancado']
+    names = ['biblioteca', 'inicio', 'graficos', 'controles', 'correcoes', 'saves', 'guias', 'suporte', 'atualizacoes', 'avancado']
     app.window.setProperty('animate', False)
     prefix = 'art-' if '--art' in sys.argv else ''
     for index, name in enumerate(names):
@@ -292,13 +292,13 @@ def main(out):
         app.grab(out / f'{prefix}{name}.png')
     if not prefix:
         backend.setFix('BP06', '1')           # one change: profile becomes custom
-        app.go(3)
+        app.go(4)
         app.grab(out / 'correcoes-personalizado.png')
         backend.scrollRequested.emit(2400)
         app.grab(out / 'correcoes-fim.png')
         backend.setFix('BP06', '0')
         backend.setLang('en_US')
-        for index, name in ((0, 'home-en'), (3, 'fixes-en')):
+        for index, name in ((1, 'home-en'), (4, 'fixes-en')):
             app.go(index)
             app.grab(out / f'{name}.png')
         screens_a_shots(app, backend, out)
@@ -308,7 +308,7 @@ def main(out):
             backend.setLang(code)
             for kind in ('xbox', 'switch'):
                 backend.setGuideKind(kind)
-                app.go(5)
+                app.go(6)
                 app.grab(out / f'guias-{kind}-{lang}.png')
         backend.setGuideKind('8bitdo')
         backend.probes['guide_dir'] = sandbox / 'no-images'

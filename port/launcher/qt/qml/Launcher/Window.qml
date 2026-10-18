@@ -12,6 +12,6 @@ Window {
     minimumHeight: 640
     visible: true
     color: Theme.bg
-    title: Backend.gameTitle + " — PC"
+    title: Theme.tr("brand") + (Backend.gameTitle !== "" ? " — " + Backend.gameTitle : "")
     Main { id: main; anchors.fill: parent }
 }

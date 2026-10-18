@@ -13,6 +13,7 @@ from .saves import Saves
 from .support import Support
 from .updates import Updates
 from .logic import backports_table, tlg_run
+import games  # noqa: E402
 import advanced_table  # noqa: E402
 import logtail  # noqa: E402
 import precompile  # noqa: E402
@@ -348,8 +349,60 @@ class Backend(QObject):
 
     @Property(str, notify=stateChanged)
     def heroKicker(self):
-        serial = (logic.shader_cache.title_id(self.settings.get('game_dir', '')) or 'CUSA00223')
-        return self.t_('hero_kicker', serial=serial, version='1.07')
+        game = self.settings.get('game_dir', '')
+        serial = (logic.shader_cache.title_id(game) or 'CUSA00223')
+        if tlg_run.current_game(self.settings) is games.SECOND_SON:
+            return self.t_('hero_kicker', serial=serial, version='1.07')
+        about = games.info(game)
+        return ' · '.join(p for p in (serial, 'v' + about['version'] if about['version'] else '') if p)
+
+    @Property(str, notify=stateChanged)
+    def heroTagline(self):
+        profile = tlg_run.current_game(self.settings)
+        return self.t_('hero_tagline') if profile is games.SECOND_SON else profile.title
+
+    @Property(bool, notify=gameDirChanged)
+    def isSecondSon(self):
+        return tlg_run.current_game(self.settings) is games.SECOND_SON
+
+    # -- game library: the folders the player added, one tile each -----------------------------
+    def _library_paths(self):
+        paths = [p for p in self.settings.get('library', []) if isinstance(p, str) and p]
+        current = self.settings.get('game_dir', '')
+        if current and current not in paths:
+            paths.insert(0, current)
+        return paths
+
+    @Property('QVariantList', notify=gameDirChanged)
+    def library(self):
+        current = self.settings.get('game_dir', '')
+        out = []
+        for path in self._library_paths():
+            about = games.info(path)
+            about['current'] = path == current
+            about['present'] = Path(path, 'eboot.bin').is_file()
+            for k in ('cover', 'art'):
+                about[k] = QUrl.fromLocalFile(about[k]).toString() if about[k] else ''
+            out.append(about)
+        return out
+
+    @Slot(str)
+    def selectGame(self, path):
+        if path and path != self.settings.get('game_dir', ''):
+            self.chooseFolder(path)
+
+    @Slot(str)
+    def addGame(self, url):
+        self.chooseFolder(url)
+
+    @Slot(str)
+    def removeGame(self, path):
+        paths = [p for p in self._library_paths() if p != path]
+        self.settings['library'] = paths
+        if self.settings.get('game_dir', '') == path:
+            self.settings['game_dir'] = paths[0] if paths else ''
+        tlg_run.save_settings(self.settings)
+        self.refresh()
 
     @Property(str, notify=stateChanged)
     def playSubtitle(self):
@@ -404,7 +457,7 @@ class Backend(QObject):
     @Property(str, notify=gameDirChanged)
     def gameTitle(self):
         """Full name of the game in the selected folder (games.py), for the window title."""
-        return logic.tlg_run.current_game(self.settings).title
+        return tlg_run.current_game(self.settings).title if self.settings.get('game_dir') else ''
 
     @Property(str, notify=gameDirChanged)
     def railTitle(self):
@@ -443,6 +496,7 @@ class Backend(QObject):
             self._message = self.t_('folder_rejected', why=logic.game_problem_text(self.t_, blocking))
         else:
             self.settings['game_dir'] = path
+            self.settings['library'] = [path] + [p for p in self._library_paths() if p != path]
             tlg_run.save_settings(self.settings)
             self._message = self.t_('folder_saved')
         self.refresh()

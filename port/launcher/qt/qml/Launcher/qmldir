@@ -8,6 +8,7 @@ Tag 1.0 Tag.qml
 Toggle 1.0 Toggle.qml
 Select 1.0 Select.qml
 HomePage 1.0 HomePage.qml
+LibraryPage 1.0 LibraryPage.qml
 FixesPage 1.0 FixesPage.qml
 AdvancedPage 1.0 AdvancedPage.qml
 ModsPage 1.0 ModsPage.qml

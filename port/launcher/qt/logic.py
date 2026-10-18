@@ -249,7 +249,12 @@ def compute_chips(settings, t, gpu='checking', pad=None, problems=None, states=N
     elif state == 'bad':
         chips.append((t('chip_game_bad', problem=game_problem_text(t, tlg_run.blocking(game_problems))), 'bad'))
     else:
-        chips.append((t('chip_game_ok', version='1.07'), 'ok'))
+        profile = tlg_run.current_game(settings)
+        if profile is tlg_run.games.SECOND_SON:
+            chips.append((t('chip_game_ok', version='1.07'), 'ok'))
+        else:
+            tested = not any(key == 'untested_eboot' for key, _ in (game_problems or []))
+            chips.append((t('chip_game_ok_other', game=profile.title), 'ok' if tested else 'warn'))
     if not built:
         chips.append((t('chip_port_missing'), 'bad'))
     states = tlg_run.experimental_states(settings) if states is None else states
