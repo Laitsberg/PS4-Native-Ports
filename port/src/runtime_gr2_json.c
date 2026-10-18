@@ -253,6 +253,144 @@ static void put_value(Buffer *b, const JValue *v, int depth) {
     default: puts_(b,"null");
     }
 }
+/* ---- Reading (inFAMOUS First Light: sce::Json::Parser and the const accessors) ---- */
+static const JValue null_value;
+static const char *skip_space(const char *p, const char *end) {
+    while (p<end && (*p==' ' || *p=='\t' || *p=='\n' || *p=='\r')) ++p;
+    return p;
+}
+static void put_utf8(char **out, unsigned code) {
+    char *o=*out;
+    if (code<0x80) *o++=(char)code;
+    else if (code<0x800) { *o++=(char)(0xc0|code>>6); *o++=(char)(0x80|(code&0x3f)); }
+    else if (code<0x10000) { *o++=(char)(0xe0|code>>12); *o++=(char)(0x80|((code>>6)&0x3f)); *o++=(char)(0x80|(code&0x3f)); }
+    else { *o++=(char)(0xf0|code>>18); *o++=(char)(0x80|((code>>12)&0x3f)); *o++=(char)(0x80|((code>>6)&0x3f)); *o++=(char)(0x80|(code&0x3f)); }
+    *out=o;
+}
+static int hex4(const char *p, const char *end, unsigned *code) {
+    if (end-p<4) return 0;
+    *code=0;
+    for (int i=0;i<4;++i) {
+        char c=p[i]; unsigned d;
+        if (c>='0' && c<='9') d=(unsigned)(c-'0');
+        else if (c>='a' && c<='f') d=(unsigned)(c-'a'+10);
+        else if (c>='A' && c<='F') d=(unsigned)(c-'A'+10);
+        else return 0;
+        *code=*code<<4|d;
+    }
+    return 1;
+}
+/* p points after the opening quote; returns the position after the closing one, or NULL. */
+static const char *parse_string(const char *p, const char *end, char **result) {
+    char *buffer=xcalloc((size_t)(end-p)+4,1), *o=buffer;
+    while (p<end && *p!='"') {
+        if (*p!='\\') { *o++=*p++; continue; }
+        if (++p>=end) break;
+        char c=*p++;
+        switch (c) {
+        case 'b': *o++='\b'; break; case 'f': *o++='\f'; break; case 'n': *o++='\n'; break;
+        case 'r': *o++='\r'; break; case 't': *o++='\t'; break;
+        case 'u': {
+            unsigned code;
+            if (!hex4(p,end,&code)) { free(buffer); return NULL; }
+            p+=4;
+            if (code>=0xd800 && code<0xdc00 && end-p>=6 && p[0]=='\\' && p[1]=='u') {
+                unsigned low;
+                if (hex4(p+2,end,&low) && low>=0xdc00 && low<0xe000) { code=0x10000+((code-0xd800)<<10)+(low-0xdc00); p+=6; }
+            }
+            put_utf8(&o,code);
+            break;
+        }
+        default: *o++=c; break;
+        }
+    }
+    if (p>=end) { free(buffer); return NULL; }
+    *result=buffer;
+    return p+1;
+}
+static const char *parse_value(const char *p, const char *end, JValue *out, int depth) {
+    memset(out,0,sizeof *out);
+    p=skip_space(p,end);
+    if (p>=end || depth>256) return NULL;
+    if (*p=='{' || *p=='[') {
+        int object=*p=='{';
+        out->type=object ? JT_OBJECT : JT_ARRAY;
+        out->v.list=xcalloc(1,sizeof(JList));
+        p=skip_space(p+1,end);
+        if (p<end && *p==(object ? '}' : ']')) return p+1;
+        for (;;) {
+            char *key=NULL;
+            if (object) {
+                p=skip_space(p,end);
+                if (p>=end || *p!='"' || !(p=parse_string(p+1,end,&key))) return NULL;
+                p=skip_space(p,end);
+                if (p>=end || *p!=':') { free(key); return NULL; }
+                ++p;
+            }
+            JNode *node=list_append(out->v.list,key);
+            free(key);
+            if (!(p=parse_value(p,end,&node->value,depth+1))) return NULL;
+            p=skip_space(p,end);
+            if (p<end && *p==',') { ++p; continue; }
+            if (p<end && *p==(object ? '}' : ']')) return p+1;
+            return NULL;
+        }
+    }
+    if (*p=='"') { out->type=JT_STRING; return parse_string(p+1,end,&out->v.s); }
+    if (end-p>=4 && !memcmp(p,"true",4)) { out->type=JT_BOOL; out->v.b=1; return p+4; }
+    if (end-p>=5 && !memcmp(p,"false",5)) { out->type=JT_BOOL; out->v.b=0; return p+5; }
+    if (end-p>=4 && !memcmp(p,"null",4)) return p+4;
+    char number[64]; size_t n=0; int real=0;
+    while (p+n<end && n<sizeof number-1 && strchr("+-0123456789.eE",p[n])) { real|=strchr(".eE",p[n])!=NULL; number[n]=p[n]; ++n; }
+    if (!n) return NULL;
+    number[n]=0;
+    char *stop;
+    if (real) { out->type=JT_REAL; out->v.r=strtod(number,&stop); }
+    else if (number[0]=='-') { out->type=JT_INT; out->v.i=strtoll(number,&stop,10); }
+    else { out->type=JT_UINT; out->v.u=strtoull(number,&stop,10); }
+    return *stop ? NULL : p+n;
+}
+/* static int Parser::parse(Value &, const char *, size_t): 0, or an SCE_JSON parse error. */
+static ABI int32_t parser_parse(JValue *value, const char *text, uint64_t size) {
+    ONCE("Parser::parse");
+    if (!value || !text) return (int32_t)0x80920101; /* SCE_JSON_ERROR_INVALID_ARGUMENT (assumed) */
+    JValue parsed;
+    const char *end=text+size, *p=parse_value(text,end,&parsed,0);
+    if (p) { p=skip_space(p,end); while (p<end && !*p) ++p; }
+    if (!p || p!=end) {
+        if (p) value_free(&parsed);
+        return (int32_t)0x80920103; /* SCE_JSON_ERROR_PARSE (assumed) */
+    }
+    value_free(value);
+    *value=parsed;
+    return 0;
+}
+static ABI int64_t value_get_integer(const JValue *self) {
+    switch (self->type) {
+    case JT_INT: return self->v.i;
+    case JT_UINT: return (int64_t)self->v.u;
+    case JT_REAL: return (int64_t)self->v.r;
+    case JT_BOOL: return self->v.b!=0;
+    default: return 0;
+    }
+}
+/* const String &getString() const: the value's char * has String's layout ({char *text}). */
+static ABI const JString *value_get_string(const JValue *self) {
+    static const JString empty={NULL};
+    return self->type==JT_STRING ? (const JString *)&self->v.s : &empty;
+}
+static ABI const JValue *value_index_key(const JValue *self, const char *key) {
+    if (self->type!=JT_OBJECT || !self->v.list || !key) return &null_value;
+    for (const JNode *n=self->v.list->head;n;n=n->next) if (n->key && !strcmp(n->key,key)) return &n->value;
+    return &null_value;
+}
+static ABI const JValue *value_index_position(const JValue *self, uint64_t index) {
+    if ((self->type!=JT_ARRAY && self->type!=JT_OBJECT) || !self->v.list) return &null_value;
+    const JNode *n=self->v.list->head;
+    while (n && index--) n=n->next;
+    return n ? &n->value : &null_value;
+}
+
 static ABI int32_t value_serialize(const JValue *self, JString *out) {
     ONCE("Value::serialize");
     Buffer b={0};
@@ -296,6 +434,11 @@ static const RuntimeExport exports[]={
     {"_ZN3sce4Json6StringD1Ev",string_dtor},
     {"_ZNK3sce4Json5Array4sizeEv",array_size},
     {"_ZNK3sce4Json6String5c_strEv",string_c_str},
+    {"_ZN3sce4Json6Parser5parseERNS0_5ValueEPKcm",parser_parse},
+    {"_ZNK3sce4Json5Value10getIntegerEv",value_get_integer},
+    {"_ZNK3sce4Json5Value9getStringEv",value_get_string},
+    {"_ZNK3sce4Json5ValueixEPKc",value_index_key},
+    {"_ZNK3sce4Json5ValueixEm",value_index_position},
 };
 uintptr_t runtime_gr2_json_resolve(const char *name) {
     return RUNTIME_LOOKUP(exports,name);

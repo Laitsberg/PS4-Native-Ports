@@ -734,6 +734,16 @@ static const RuntimeExport exports[]={
     {"sceNpScoreGetRankingByNpIdPcId",np_signed_out}, {"sceNpScoreGetRankingByRange",np_signed_out},
     {"sceNpScoreRecordGameData",np_signed_out}, {"sceNpScoreRecordScore",np_signed_out},
     {"sceNpScoreSetPlayerCharacterId",ok_void},
+    /* inFAMOUS First Light (CUSA00897): Score Attack leaderboards and the TUS that keeps the
+     * friends' scores. Offline: contexts and requests exist, every query reports signed out. */
+    {"sceNpScoreCreateNpTitleCtxA",np_request_ctx}, {"sceNpScorePollAsync",np_poll},
+    {"sceNpScoreGetRankingByAccountIdAsync",np_signed_out}, {"sceNpScoreGetRankingByRangeAAsync",np_signed_out},
+    {"sceNpScoreRecordScoreAsync",np_signed_out},
+    {"sceNpTusCreateNpTitleCtxA",np_request_ctx}, {"sceNpTusDeleteNpTitleCtx",ok_void},
+    {"sceNpTusCreateRequest",np_request}, {"sceNpTusDeleteRequest",ok_void}, {"sceNpTusPollAsync",np_poll},
+    {"sceNpTusGetMultiSlotVariableAAsync",np_signed_out}, {"sceNpTusGetMultiUserVariableAAsync",np_signed_out},
+    {"sceNpTusSetMultiSlotVariableAAsync",np_signed_out},
+    {"sceNpWebApiCreateContextA",np_signed_out}, {"sceNpWebApiSendRequest2",np_signed_out},
     {"sceVoiceCreatePort",voice_port}, {"sceVoiceDeletePort",ok_void},
     {"sceVoiceConnectIPortToOPort",ok_void}, {"sceVoiceDisconnectIPortFromOPort",ok_void},
     {"sceVoiceStart",ok_void}, {"sceVoiceStop",ok_void}, {"sceVoiceGetPortInfo",voice_info},
