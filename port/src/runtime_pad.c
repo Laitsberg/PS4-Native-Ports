@@ -331,7 +331,9 @@ static void load_button_maps(void) {
  *   bottom face button (cross / A / Nintendo B) shakes it; R2 still sprays. The sticks and that
  *   button are hidden from the game, so the character neither walks, jumps nor turns the camera.
  *   A notice on screen tells the mode; leaving it puts the controller upright again.
- * TLG_MOTION=off disables real sensors (simulation still works). */
+ * TLG_MOTION=off disables real sensors (simulation still works). TLG_MOTION_TOGGLE=off removes the
+ * gamepad toggle (L3+R3 and TLG_MOTION_BUTTON reach the game as they are): games without a
+ * graffiti scene, where an accidental L3+R3 would hide the sticks and cross from the game. */
 static int injected_motion; /* TLG_PAD_FILE tokens: 1 tilt_right (T), 2 tilt_left (G), 4 shake (Y) */
 typedef struct { float w, x, y, z; } Quat;
 static struct { Quat q; float roll, pitch, yaw, aim_pitch; uint64_t last_us; int sensors, warned, mode, toggle_held; } motion={{1,0,0,0},0,0,0,0,0,-1,0,0,0};
@@ -348,6 +350,15 @@ static void gravity_of(Quat q, float out[3]) {
     Quat c={q.w,-q.x,-q.y,-q.z}, v={0,0,1,0};
     Quat r=quat_mul(quat_mul(c,v),q);
     out[0]=r.x; out[1]=r.y; out[2]=r.z;
+}
+static int motion_toggle_enabled(void) {
+    static int enabled=-1;
+    if (enabled<0) {
+        const char *e=getenv("TLG_MOTION_TOGGLE");
+        enabled=!(e && (!strcmp(e,"off") || !strcmp(e,"0")));
+        if (!enabled) printf("Runtime: sensor mode toggle off (TLG_MOTION_TOGGLE)\n");
+    }
+    return enabled;
 }
 static int motion_button(void) {
     static int button=-2;
@@ -399,8 +410,8 @@ static void sample_motion(PadData *d, SDL_Gamepad *g, const bool *k) {
         motion.aim_pitch=fminf(fmaxf(motion.aim_pitch,-1.2f),1.2f);
     }
     if (g) {
-        const int sticks=SDL_GetGamepadButton(g,SDL_GAMEPAD_BUTTON_LEFT_STICK) && SDL_GetGamepadButton(g,SDL_GAMEPAD_BUTTON_RIGHT_STICK);
-        const int toggle=sticks || (motion_button()>=0 && SDL_GetGamepadButton(g,(SDL_GamepadButton)motion_button()));
+        const int sticks=motion_toggle_enabled() && SDL_GetGamepadButton(g,SDL_GAMEPAD_BUTTON_LEFT_STICK) && SDL_GetGamepadButton(g,SDL_GAMEPAD_BUTTON_RIGHT_STICK);
+        const int toggle=sticks || (motion_toggle_enabled() && motion_button()>=0 && SDL_GetGamepadButton(g,(SDL_GamepadButton)motion_button()));
         if (toggle && !motion.toggle_held) {
             motion.mode=!motion.mode;
             const char *lang=getenv("TLG_UI_LANG");
