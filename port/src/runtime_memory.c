@@ -280,7 +280,18 @@ static int pool(void) {
     runtime_memory_reserve();
     uint64_t bytes=POOL_SIZE+FLEX_SPAN;
     section=CreateFileMapping2(INVALID_HANDLE_VALUE,NULL,FILE_MAP_ALL_ACCESS,PAGE_EXECUTE_READWRITE,SEC_COMMIT,bytes,NULL,NULL,0);
-    if (!section) { fprintf(stderr,"Runtime: cannot create %" PRIu64 " MiB of guest memory (error %lu); is the page file large enough?\n",bytes>>20,GetLastError()); return -1; }
+    if (!section) {
+        /* Windows refuses to commit the console's memory up front (1455: commit limit, 1450: the
+         * same under memory pressure). Nothing can run without it: say why and stop with exit code
+         * 25, which the launcher turns into a "page file too small" message, instead of letting the
+         * game fault and leave a black window open. */
+        DWORD error=GetLastError();
+        fprintf(stderr,"Runtime: cannot create %" PRIu64 " MiB of guest memory (error %lu); is the page file large enough?\n",bytes>>20,error);
+        printf("STOP: not enough virtual memory for the console's %" PRIu64 " MiB (Windows error %lu): close other programs or enlarge the page file\n",bytes>>20,error);
+        fflush(NULL);
+        TerminateProcess(GetCurrentProcess(),25);
+        return -1;
+    }
     backing_base=MapViewOfFile3(section,GetCurrentProcess(),NULL,0,bytes,0,PAGE_READWRITE,NULL,0);
     return backing_base ? 0 : -1;
 }

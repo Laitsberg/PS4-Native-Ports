@@ -446,5 +446,6 @@
   "library_selected": {"en": "Selected", "pt": "Selecionado"},
   "library_missing": {"en": "Folder not found", "pt": "Pasta não encontrada"},
   "library_untested": {"en": "Untested", "pt": "Não testado"},
-  "brand": {"en": "PS4 Native Ports", "pt": "PS4 Native Ports"}
+  "brand": {"en": "PS4 Native Ports", "pt": "PS4 Native Ports"},
+  "err_virtual_memory": {"en": "The game could not start: Windows did not give it the ~6 GB of memory the console needs. Close heavy programs (browser, video editors) or enlarge the page file (System → Advanced → Performance → Virtual memory: 16384–32768 MB), then press Play again.", "pt": "O jogo não iniciou: o Windows não liberou os ~6 GB de memória que o console precisa. Feche programas pesados (navegador, editores de vídeo) ou aumente o arquivo de paginação (Sistema → Avançado → Desempenho → Memória virtual: 16384–32768 MB) e jogue de novo."}
 }

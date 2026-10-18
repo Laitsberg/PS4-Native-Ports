@@ -592,6 +592,10 @@ class Backend(QObject):
         self._tail = None
         if code == -1000:
             pass
+        elif code == 25:   # runtime_memory.c: Windows refused the console's memory (page file)
+            self._message = self.t_('err_virtual_memory')
+            self._log.append(self._message)
+            self.logChanged.emit()
         else:
             self._log.append(self.t_('ended' if code in (0, -15) else 'crashed', code=code))
             self.logChanged.emit()
