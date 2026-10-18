@@ -24,6 +24,7 @@ class Game:
     names: tuple = ()            # lowercase parts of param.sfo TITLE that identify other regions
     tested: dict = field(default_factory=dict)   # {(entry, image size): 'region version'} of tested eboots
     xpps_jobs: bool = False      # tools/xpps shader job generator (built from the Second Son 1.07 engine)
+    motion_toggle: bool = False  # L3+R3 'sensor mode' (motion prompts, e.g. the graffiti can) on a gamepad
     note: str = ''               # what the player should know (en)
 
 
@@ -32,12 +33,12 @@ SECOND_SON = Game(
     title_ids=frozenset({'CUSA00223', 'CUSA00004'}), names=('second son',),
     save_serial='CUSA00223',
     tested={(0x61dfd0, 133_846_143): '1.07'},
-    xpps_jobs=True)
+    xpps_jobs=True, motion_toggle=True)
 
 FIRST_LIGHT = Game(
     key='infamous-fl', title='inFAMOUS First Light', rail=('inFAMOUS', 'First Light · PC'),
     title_ids=frozenset({'CUSA00897'}), names=('first light',),
-    save_serial='CUSA00897',
+    save_serial='CUSA00897', motion_toggle=True,   # same engine as Second Son: kept in case of motion prompts
     tested={(0x6ffd70, 136_535_375): 'EU 1.00 (APP_VER 01.04)'},
     note='Same engine as Second Son. Leaderboards (Score Attack) are offline.')
 

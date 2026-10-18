@@ -623,9 +623,10 @@ def build_env(settings, extra=None):
     profile = current_game(settings)
     env.setdefault('ISS_APP_NAME', profile.title)
     env.setdefault('ISS_APP_ID', 'infamous-pc' if profile is games.SECOND_SON else f'{profile.key}-pc')
-    if profile is not games.SECOND_SON:
-        # The L3+R3 "sensor mode" is the Second Son graffiti can: elsewhere an accidental press would
-        # take the sticks and cross away from the game (J-STARS: the fighter stops moving).
+    if not profile.motion_toggle:
+        # The L3+R3 "sensor mode" is for motion prompts (the Second Son graffiti can): elsewhere an
+        # accidental press would take the sticks and cross away from the game (J-STARS: the fighter
+        # stops moving). The touchpad emulation (View/Select, mouse) stays in every game.
         env.setdefault('ISS_MOTION_TOGGLE', 'off')
     icon = window_icon(settings)
     if icon:

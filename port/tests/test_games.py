@@ -48,6 +48,10 @@ class GamesTests(unittest.TestCase):
         game = self.detect({'TITLE_ID': 'CUSA12345', 'TITLE': 'Some Game', 'INSTALL_DIR_SAVEDATA': 'CUSA12345'})
         self.assertEqual((game.title, game.save_serial, game.xpps_jobs), ('Some Game', 'CUSA12345', False))
 
+    def test_sensor_mode_toggle(self):
+        self.assertEqual([g.motion_toggle for g in games.KNOWN], [True, True, False])
+        self.assertFalse(self.detect({'TITLE_ID': 'CUSA12345', 'TITLE': 'Some Game'}).motion_toggle)
+
     def test_no_folder_is_second_son(self):
         self.assertIs(games.detect(''), games.SECOND_SON)
 
