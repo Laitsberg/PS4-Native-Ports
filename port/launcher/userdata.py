@@ -5,8 +5,8 @@ The folder is resolved in one place, user_dir(), in this order:
   1. ISS_USER_DIR in the environment (TLG_USER_DIR is the old name and still works);
   2. the per-user pointer file, kept OUTSIDE the game folder on purpose so that it survives
      extracting a new version somewhere else or deleting the old one:
-       Windows  %APPDATA%\\inFAMOUS-PC\\launcher.json
-       Linux    $XDG_CONFIG_HOME/infamous-pc/launcher.json   (default ~/.config)
+       Windows  %APPDATA%\\PS4-Native-Ports\\launcher.json
+       Linux    $XDG_CONFIG_HOME/ps4-native-ports/launcher.json   (default ~/.config)
      key "user_dir" (the same file keeps "backup_extra_dir" and "backup_keep");
   3. <port folder>/user, the portable mode (what the port always did).
 
@@ -40,8 +40,8 @@ def pointer_path(env=None, nt=None):
     nt = (os.name == 'nt') if nt is None else nt
     if nt:
         base = Path(env.get('APPDATA') or Path.home() / 'AppData' / 'Roaming')
-        return base / 'inFAMOUS-PC' / 'launcher.json'
-    return Path(env.get('XDG_CONFIG_HOME') or Path.home() / '.config') / 'infamous-pc' / 'launcher.json'
+        return base / 'PS4-Native-Ports' / 'launcher.json'
+    return Path(env.get('XDG_CONFIG_HOME') or Path.home() / '.config') / 'ps4-native-ports' / 'launcher.json'
 
 
 def read_pointer(path=None):
@@ -110,13 +110,13 @@ def reset_user_dir():
 
 
 def suggested_dir(nt=None, env=None):
-    """A stable place outside the game folder: Documents/inFAMOUS-PC (Windows),
-    ~/.local/share/infamous-pc (Linux)."""
+    """A stable place outside the game folder: Documents/PS4-Native-Ports (Windows),
+    ~/.local/share/ps4-native-ports (Linux)."""
     nt = (os.name == 'nt') if nt is None else nt
     env = os.environ if env is None else env
     if nt:
-        return Path.home() / 'Documents' / 'inFAMOUS-PC'
-    return Path(env.get('XDG_DATA_HOME') or Path.home() / '.local' / 'share') / 'infamous-pc'
+        return Path.home() / 'Documents' / 'PS4-Native-Ports'
+    return Path(env.get('XDG_DATA_HOME') or Path.home() / '.local' / 'share') / 'ps4-native-ports'
 
 
 def same_path(a, b):

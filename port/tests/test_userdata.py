@@ -58,9 +58,9 @@ class ResolutionTests(Temp):
 
     def test_pointer_locations(self):
         win = userdata.pointer_path(env={'APPDATA': 'C:\\Users\\a\\AppData\\Roaming'}, nt=True)
-        self.assertEqual(('inFAMOUS-PC', 'launcher.json'), win.parts[-2:])
+        self.assertEqual(('PS4-Native-Ports', 'launcher.json'), win.parts[-2:])
         lin = userdata.pointer_path(env={'XDG_CONFIG_HOME': '/cfg'}, nt=False)
-        self.assertEqual(Path('/cfg/infamous-pc/launcher.json'), lin)
+        self.assertEqual(Path('/cfg/ps4-native-ports/launcher.json'), lin)
 
     def test_write_pointer_keeps_other_keys_and_reset_removes(self):
         path = self.root / 'cfg' / 'launcher.json'
@@ -80,8 +80,8 @@ class ResolutionTests(Temp):
             self.assertEqual(self.root / 'user', userdata.user_dir(self.root))
 
     def test_suggestions(self):
-        self.assertEqual(('Documents', 'inFAMOUS-PC'), userdata.suggested_dir(nt=True).parts[-2:])
-        self.assertEqual(Path('/d/infamous-pc'), userdata.suggested_dir(nt=False, env={'XDG_DATA_HOME': '/d'}))
+        self.assertEqual(('Documents', 'PS4-Native-Ports'), userdata.suggested_dir(nt=True).parts[-2:])
+        self.assertEqual(Path('/d/ps4-native-ports'), userdata.suggested_dir(nt=False, env={'XDG_DATA_HOME': '/d'}))
 
 
 class GameGetsTheRightUserTests(Temp):

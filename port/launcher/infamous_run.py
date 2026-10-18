@@ -162,7 +162,9 @@ DEFAULT_SETTINGS = {
 
 def config_path():
     base = Path(os.environ.get('APPDATA') or os.environ.get('XDG_CONFIG_HOME') or Path.home() / '.config')
-    return base / 'infamous-launcher' / 'settings.json'
+    # Its own folder, not the upstream Second Son launcher's (infamous-launcher): both can be installed
+    # side by side without one picking up the other's game folder and options.
+    return base / 'ps4-native-ports' / 'settings.json'
 
 
 # Bumped when a default changes in a way that must reach players who already saved settings.
