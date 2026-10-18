@@ -67,7 +67,7 @@ def demo_info():
 
 def demo_release():
     return {'tag': 'v2026.10.15-61e8942', 'name': 'v2026.10.15', 'published': '2026-10-15',
-            'url': 'https://github.com/Laitsberg/iss_pc/releases/tag/v2026.10.15-61e8942',
+            'url': 'https://github.com/Laitsberg/PS4-Native-Ports/releases/tag/v2026.10.15-61e8942',
             'body': ('Build automatico do commit 61e8942.\n\n## Novidades\n- Corrige luzes piscando em GPUs NVIDIA RTX 30 (#72) (PR #80)\n'
                      '- Novo launcher com telas de Saves e Suporte (PR #81)\n\nIssues relatadas por: #72 (@jogador). Obrigado!\n\n'
                      "## What's new\n- Fixes flickering lights on NVIDIA RTX 30 GPUs (#72) (PR #80)\n"

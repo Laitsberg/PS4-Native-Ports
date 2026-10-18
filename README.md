@@ -2,11 +2,11 @@
 
 <p align="center">
   <a href="#english"><b>English below</b></a> ·
-  <a href="https://github.com/Laitsberg/iss_pc/releases/latest">Скачать / Download</a> ·
+  <a href="https://github.com/Laitsberg/PS4-Native-Ports/releases/latest">Скачать / Download</a> ·
   <a href="docs/SECOND_SON.md">inFAMOUS Second Son (upstream guide)</a>
 </p>
 
-<p align="center"><a href="https://github.com/Laitsberg/iss_pc/actions/workflows/build.yml"><img src="https://github.com/Laitsberg/iss_pc/actions/workflows/build.yml/badge.svg?branch=first-light" alt="Build"></a></p>
+<p align="center"><a href="https://github.com/Laitsberg/PS4-Native-Ports/actions/workflows/build.yml"><img src="https://github.com/Laitsberg/PS4-Native-Ports/actions/workflows/build.yml/badge.svg?branch=first-light" alt="Build"></a></p>
 
 > **Экспериментальная версия.** Игры запускаются и проходятся, но это ранняя сборка: возможны вылеты, подтормаживания и графические ошибки. Смотрите [Известные проблемы](#известные-проблемы).
 
@@ -46,7 +46,7 @@
 
 ## Как играть
 
-1. Скачайте [последний релиз](https://github.com/Laitsberg/iss_pc/releases/latest) (`ps4-native-ports-windows-x86_64.zip`) и распакуйте его.
+1. Скачайте [последний релиз](https://github.com/Laitsberg/PS4-Native-Ports/releases/latest) (`ps4-native-ports-windows-x86_64.zip`) и распакуйте его.
 2. Запустите **PS4 Native Ports.exe**. Если Windows покажет «Система Windows защитила ваш компьютер», нажмите *Подробнее* → *Выполнить в любом случае*: программа не подписана.
 3. На экране **Library** нажмите **«+»** и выберите папку с игрой. Игра появится плиткой с обложкой из вашего дампа. Интерфейс лаунчера пока на английском (или португальском).
 4. Нажмите на плитку, затем **Play**. Первые минуты возможны подтормаживания: шейдеры компилируются и кешируются.
@@ -76,7 +76,7 @@
 ## Сборка из исходников
 
 ```bash
-git clone --recursive -b first-light https://github.com/Laitsberg/iss_pc.git && cd iss_pc
+git clone --recursive -b first-light https://github.com/Laitsberg/PS4-Native-Ports.git && cd PS4-Native-Ports
 cd port && ISS_LTO=OFF bash build.sh     # Linux; Windows — MSYS2 CLANG64, см. port/packaging/windows/README.md
 cd .. && ./infamous_launcher_qt.sh       # лаунчер на Qt (нужен PySide6)
 ```
@@ -137,7 +137,7 @@ Nothing from the console firmware is needed. A step-by-step guide to building th
 
 ## How to play
 
-1. Download the [latest release](https://github.com/Laitsberg/iss_pc/releases/latest) (`ps4-native-ports-windows-x86_64.zip`) and extract it.
+1. Download the [latest release](https://github.com/Laitsberg/PS4-Native-Ports/releases/latest) (`ps4-native-ports-windows-x86_64.zip`) and extract it.
 2. Run **PS4 Native Ports.exe**. If "Windows protected your PC" appears, click *More info* → *Run anyway*: the program is not signed.
 3. On the **Library** screen click **"+"** and pick the game folder. The game shows up as a tile with the cover from your dump.
 4. Click the tile, then **Play**. Expect some stutter in the first minutes while shaders are compiled and cached.
@@ -167,7 +167,7 @@ Second Son problems (RX 580, 4 GB VRAM, etc.) are in the [Second Son guide](docs
 ## Building from source
 
 ```bash
-git clone --recursive -b first-light https://github.com/Laitsberg/iss_pc.git && cd iss_pc
+git clone --recursive -b first-light https://github.com/Laitsberg/PS4-Native-Ports.git && cd PS4-Native-Ports
 cd port && ISS_LTO=OFF bash build.sh     # Linux; on Windows use MSYS2 CLANG64, see port/packaging/windows/README.md
 cd .. && ./infamous_launcher_qt.sh       # the Qt launcher (needs PySide6)
 ```

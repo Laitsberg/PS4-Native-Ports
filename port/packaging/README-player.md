@@ -20,7 +20,7 @@
 
 Снимите дамп игры со своей PS4 (GoldHEN + Itemzflow) и соберите его в одну папку: базовая игра, сверху (с заменой файлов) обновление, если оно есть. В папке должны быть `eboot.bin`, `sce_module/libc.prx`, `sce_module/libSceFios2.prx`, `sce_sys/param.sfo` и всё остальное содержимое игры. Из прошивки консоли ничего не нужно.
 
-Подробно для Second Son (где взять `param.sfo` версии 1.07 и т. д.): https://github.com/Laitsberg/iss_pc/blob/first-light/docs/ARQUIVOS_NECESSARIOS.md
+Подробно для Second Son (где взять `param.sfo` версии 1.07 и т. д.): https://github.com/Laitsberg/PS4-Native-Ports/blob/first-light/docs/ARQUIVOS_NECESSARIOS.md
 
 ### Компьютер
 
@@ -41,7 +41,7 @@ Windows 10 (1903+) / 11, 64 бита; видеокарта с Vulkan 1.3 (рек
 - **Фризы в первые минуты и в новых местах** — компилируются шейдеры, в следующий раз будет плавнее.
 - **Игра сразу закрывается, лаунчер пишет про виртуальную память** — закройте другие игры и программы, увеличьте файл подкачки.
 - **Вылет или зависание** — экран **Support** → **Report a problem** собирает отчёт и лог без личных путей. Логи лежат в `out/logs/run-*.log`. Если игра зависла с открытым окном, через 10 секунд в `out/last_run.log` появится блок `FREEZE:`.
-- Проблемы, которые касаются только Second Son (RX 580, 4 ГБ видеопамяти, датчик движения и тачпад): https://github.com/Laitsberg/iss_pc/blob/first-light/docs/SECOND_SON.md#english
+- Проблемы, которые касаются только Second Son (RX 580, 4 ГБ видеопамяти, датчик движения и тачпад): https://github.com/Laitsberg/PS4-Native-Ports/blob/first-light/docs/SECOND_SON.md#english
 
 ## English
 
@@ -57,7 +57,7 @@ Windows 10 (1903+) / 11, 64 бита; видеокарта с Vulkan 1.3 (рек
 
 Dump the game from your own PS4 (GoldHEN + Itemzflow) and merge it into one folder: the base game, with the update copied over it (replacing files) if there is one. The folder must have `eboot.bin`, `sce_module/libc.prx`, `sce_module/libSceFios2.prx`, `sce_sys/param.sfo` and the rest of the game's content. Nothing from the console firmware is needed.
 
-Step by step for Second Son (where to get the 1.07 `param.sfo`, etc.): https://github.com/Laitsberg/iss_pc/blob/first-light/docs/ARQUIVOS_NECESSARIOS.md#required-game-files
+Step by step for Second Son (where to get the 1.07 `param.sfo`, etc.): https://github.com/Laitsberg/PS4-Native-Ports/blob/first-light/docs/ARQUIVOS_NECESSARIOS.md#required-game-files
 
 ### PC
 
@@ -78,7 +78,7 @@ Saves and the shader cache live in the data folder (`Documents\PS4-Native-Ports`
 - **Stutter in the first minutes and in new areas**: shaders are being compiled; it is smoother next time.
 - **The game closes right away and the launcher mentions virtual memory**: close other games and programs, enlarge the page file.
 - **Crash or freeze**: **Support** → **Report a problem** builds a report and a log without personal paths. Logs are in `out/logs/run-*.log`. If the game freezes with the window open, after 10 seconds `out/last_run.log` gets a `FREEZE:` block.
-- Problems that only affect Second Son (RX 580, 4 GB of VRAM, motion sensor and touchpad): https://github.com/Laitsberg/iss_pc/blob/first-light/docs/SECOND_SON.md#english
+- Problems that only affect Second Son (RX 580, 4 GB of VRAM, motion sensor and touchpad): https://github.com/Laitsberg/PS4-Native-Ports/blob/first-light/docs/SECOND_SON.md#english
 
 ---
 

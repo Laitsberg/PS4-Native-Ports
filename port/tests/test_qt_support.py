@@ -151,7 +151,7 @@ class LogSummaryTests(unittest.TestCase):
 class IssueUrlTests(unittest.TestCase):
     def query(self, url):
         parsed = urlparse(url)
-        self.assertEqual(f'{parsed.scheme}://{parsed.netloc}{parsed.path}', 'https://github.com/Laitsberg/iss_pc/issues/new')
+        self.assertEqual(f'{parsed.scheme}://{parsed.netloc}{parsed.path}', 'https://github.com/Laitsberg/PS4-Native-Ports/issues/new')
         return {k: v[0] for k, v in parse_qs(parsed.query).items()}
 
     def test_short_body_goes_in_full(self):
@@ -400,12 +400,12 @@ class FetchTests(unittest.TestCase):
 
     def test_one_get_with_user_agent_and_timeout_and_no_data(self):
         release = {'tag_name': 'v2026.10.15-61e8942', 'name': 'v2026.10.15', 'body': CI_BODY, 'published_at': '2026-10-15T10:00:00Z',
-                   'html_url': 'https://github.com/Laitsberg/iss_pc/releases/tag/v2026.10.15-61e8942'}
+                   'html_url': 'https://github.com/Laitsberg/PS4-Native-Ports/releases/tag/v2026.10.15-61e8942'}
         opener = self.opener(release)
         got = releases.fetch_latest('v2026.10.13-3f2a9c1', opener=opener)
         self.assertEqual(len(opener.calls), 1)
         request, timeout = opener.calls[0]
-        self.assertEqual(request.full_url, 'https://api.github.com/repos/Laitsberg/iss_pc/releases/latest')
+        self.assertEqual(request.full_url, 'https://api.github.com/repos/Laitsberg/PS4-Native-Ports/releases/latest')
         self.assertEqual(request.get_method(), 'GET')
         self.assertIsNone(request.data)
         self.assertEqual(timeout, 10)
@@ -468,7 +468,7 @@ class ControllerTests(unittest.TestCase):
         self.logs.mkdir()
         (self.logs / 'run-1.log').write_text(LOG + 'C:\\Users\\Maria Silva\\x\n', encoding='utf-8')
         self.opened, self.copied, self.saved = [], [], []
-        self.release = {'tag': 'v2026.10.15-61e8942', 'url': 'https://github.com/Laitsberg/iss_pc/releases/tag/v2026.10.15-61e8942',
+        self.release = {'tag': 'v2026.10.15-61e8942', 'url': 'https://github.com/Laitsberg/PS4-Native-Ports/releases/tag/v2026.10.15-61e8942',
                         'body': CI_BODY, 'published': '2026-10-15'}
         self.fetch_calls = []
 
@@ -543,7 +543,7 @@ class ControllerTests(unittest.TestCase):
         self.load_support()
         self.support.openIssue()
         url = self.opened[-1]
-        self.assertTrue(url.startswith('https://github.com/Laitsberg/iss_pc/issues/new?title='))
+        self.assertTrue(url.startswith('https://github.com/Laitsberg/PS4-Native-Ports/issues/new?title='))
         body = parse_qs(urlparse(url).query)['body'][0]
         self.assertIn('AMD Radeon RX 580', body)
         self.assertNotIn('Maria', url)

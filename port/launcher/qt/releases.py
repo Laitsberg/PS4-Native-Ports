@@ -7,9 +7,9 @@ import socket
 import urllib.error
 import urllib.request
 
-API_URL = 'https://api.github.com/repos/Laitsberg/iss_pc/releases/latest'
-RELEASES_URL = 'https://github.com/Laitsberg/iss_pc/releases/latest'
-RELEASE_PREFIX = 'https://github.com/Laitsberg/iss_pc/releases/'
+API_URL = 'https://api.github.com/repos/Laitsberg/PS4-Native-Ports/releases/latest'
+RELEASES_URL = 'https://github.com/Laitsberg/PS4-Native-Ports/releases/latest'
+RELEASE_PREFIX = 'https://github.com/Laitsberg/PS4-Native-Ports/releases/'
 TIMEOUT = 10
 
 
@@ -119,7 +119,7 @@ def _clean(text):
 
 # --------------------------------------------------------------------------------------- network
 def user_agent(version=''):
-    return f'iss_pc-launcher/{version or "unknown"} (+https://github.com/Laitsberg/iss_pc)'
+    return f'iss_pc-launcher/{version or "unknown"} (+https://github.com/Laitsberg/PS4-Native-Ports)'
 
 
 def fetch_latest(version='', opener=urllib.request.urlopen, url=API_URL, timeout=TIMEOUT):
