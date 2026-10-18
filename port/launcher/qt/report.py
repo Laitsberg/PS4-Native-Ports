@@ -17,9 +17,9 @@ from pathlib import Path
 from urllib.parse import quote
 
 HERE = Path(__file__).resolve().parent
-ISSUES_URL = 'https://github.com/HayatoG/iss_pc/issues/new'
+ISSUES_URL = 'https://github.com/Laitsberg/iss_pc/issues/new'
 URLS = {'discord': 'https://discord.gg/UMkdMYZh9g', 'youtube': 'https://www.youtube.com/@hayatog-dev',
-        'github': 'https://github.com/HayatoG/iss_pc'}
+        'github': 'https://github.com/Laitsberg/iss_pc'}
 BODY_LIMIT = 6000        # characters of the issue body that may travel in the URL
 URL_LIMIT = 7500         # the encoded URL (browsers and GitHub refuse much longer ones)
 LOG_READ_LIMIT = 32 * 1024 * 1024

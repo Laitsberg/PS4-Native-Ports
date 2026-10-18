@@ -46,9 +46,9 @@
 
 ## Как играть
 
-1. Скачайте [последний релиз](https://github.com/Laitsberg/iss_pc/releases/latest) (`infamous-windows-x86_64.zip`) и распакуйте его.
-2. Запустите лаунчер (`inFAMOUS Second Son.exe`; переименование в PS4 Native Ports будет в следующей сборке). Если Windows покажет «Система Windows защитила ваш компьютер», нажмите *Подробнее* → *Выполнить в любом случае*: программа не подписана.
-3. На экране **Библиотека** нажмите **«+»** и выберите папку с игрой. Игра появится плиткой с обложкой из вашего дампа.
+1. Скачайте [последний релиз](https://github.com/Laitsberg/iss_pc/releases/latest) (`ps4-native-ports-windows-x86_64.zip`) и распакуйте его.
+2. Запустите **PS4 Native Ports.exe**. Если Windows покажет «Система Windows защитила ваш компьютер», нажмите *Подробнее* → *Выполнить в любом случае*: программа не подписана.
+3. На экране **Library** нажмите **«+»** и выберите папку с игрой. Игра появится плиткой с обложкой из вашего дампа. Интерфейс лаунчера пока на английском (или португальском).
 4. Нажмите на плитку, затем **Play**. Первые минуты возможны подтормаживания: шейдеры компилируются и кешируются.
 
 В игре **F10** показывает счётчик FPS, **Insert** (или R3 + L2 на геймпаде) открывает меню порта. Работают DualSense, DualShock 4, Xbox и другие геймпады через SDL3, а также клавиатура и мышь.
@@ -71,6 +71,7 @@
 - **First Light и J-STARS:** заглушки сетевых сервисов (NpScore, NpTus, WebApi, Matching2, Signaling, диалоги PSN, Share Play, ScreenShot и др.) и парсер `sce::Json` в рантайме, чтобы игры не останавливались на неизвестных системных функциях.
 - **Лаунчер PS4 Native Ports:** библиотека игр, распознавание игры по `param.sfo`, проверка версии `eboot.bin`, отдельные сохранения и настройки для каждой игры. Графика, управление, сохранения и экспериментальные исправления BP01–BP12 из upstream сохранены.
 - **Понятная ошибка при нехватке памяти** вместо молчаливого вылета.
+- **Своё имя и иконка:** `PS4 Native Ports.exe`; проверка обновлений и отчёты о проблемах ведут в этот репозиторий, а не в upstream.
 
 ## Сборка из исходников
 
@@ -136,8 +137,8 @@ Nothing from the console firmware is needed. A step-by-step guide to building th
 
 ## How to play
 
-1. Download the [latest release](https://github.com/Laitsberg/iss_pc/releases/latest) (`infamous-windows-x86_64.zip`) and extract it.
-2. Run the launcher (`inFAMOUS Second Son.exe`; it will be renamed to PS4 Native Ports in the next build). If "Windows protected your PC" appears, click *More info* → *Run anyway*: the program is not signed.
+1. Download the [latest release](https://github.com/Laitsberg/iss_pc/releases/latest) (`ps4-native-ports-windows-x86_64.zip`) and extract it.
+2. Run **PS4 Native Ports.exe**. If "Windows protected your PC" appears, click *More info* → *Run anyway*: the program is not signed.
 3. On the **Library** screen click **"+"** and pick the game folder. The game shows up as a tile with the cover from your dump.
 4. Click the tile, then **Play**. Expect some stutter in the first minutes while shaders are compiled and cached.
 
@@ -161,6 +162,7 @@ Second Son problems (RX 580, 4 GB VRAM, etc.) are in the [Second Son guide](docs
 - **First Light and J-STARS:** stubs for network services (NpScore, NpTus, WebApi, Matching2, Signaling, PSN dialogs, Share Play, ScreenShot and others) and an `sce::Json` parser in the runtime, so the games no longer stop at unknown system functions.
 - **PS4 Native Ports launcher:** a game library, game detection from `param.sfo`, an `eboot.bin` version check, separate saves and settings per game. The upstream graphics, controls, saves and BP01–BP12 experimental fixes are kept.
 - **A clear error when memory runs out** instead of a silent crash.
+- **Own name and icon:** `PS4 Native Ports.exe`; the update check and problem reports go to this repository, not upstream.
 
 ## Building from source
 

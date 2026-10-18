@@ -907,7 +907,7 @@ def main():
         sys.exit(tlg_run.main(args))
     if args[:1] == ['--play']:
         sys.exit(tlg_run.main(args[1:]))
-    root = tk.Tk(className='infamous-pc')  # matches StartupWMClass in the desktop entry
+    root = tk.Tk(className='ps4-native-ports-pc')  # matches StartupWMClass in the desktop entry
     try:
         ttk.Style().theme_use('clam')
     except tk.TclError:

@@ -89,8 +89,8 @@ class App:
 
     def __init__(self, backend=None, argv=None):
         self.qt = QGuiApplication.instance() or QGuiApplication(argv or sys.argv)
-        self.qt.setApplicationName('infamous-launcher')
-        self.qt.setDesktopFileName('infamous-pc')
+        self.qt.setApplicationName('ps4-native-ports')
+        self.qt.setDesktopFileName('ps4-native-ports-pc')
         self.backend = backend or Backend()
         self.backend.fonts = load_fonts()
         icon = HERE.parent / 'infamous.png'
