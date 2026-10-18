@@ -73,6 +73,8 @@ C runtime needs SDL3 headers to compile; CI is the real build check.
 
 ## Open work
 
+See `docs/SURVEY_PORTS_2026-10.md` (what other native PS4 ports have that we can take, by priority).
+
 - First Light: shader stutter (the xpps precompile is built from Second Son 1.07 tables; adapting it is the
   main lever), the two long load freezes.
 - Launcher UI has no Russian translation yet.
