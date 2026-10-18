@@ -3,7 +3,7 @@
 """Prepare and run a supported PS4 game (inFAMOUS Second Son, inFAMOUS First Light, J-STARS Victory
 VS+; games.py has the profiles) through the native loader.
 
-Shared by the command line (run_infamous.sh -> `infamous_run.py [seconds]`) and the launcher
+Shared by the command line (run_game.sh -> `infamous_run.py [seconds]`) and the launcher
 window (infamous_launcher.py), so both start the game the same way:
   1. prepare.py / link_modules.py / content_profile.py build out/boot-linked.bin from the game
      folder (eboot + the game's own libc and Fios2; no console firmware module is needed);

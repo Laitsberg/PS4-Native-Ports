@@ -1,3 +1,5 @@
+> **PS4 Native Ports:** this is the upstream iss_pc README, kept for its Second Son details. In this fork the launcher is `PS4 Native Ports.exe`, the packages are `ps4-native-ports-*`, and the scripts are `ps4_native_ports.sh`, `ps4_native_ports_classic.sh` and `run_game.sh` (here still called `infamous_launcher_qt.sh`, `infamous_launcher.sh` and `run_infamous.sh`).
+
 <p align="center"><img src="../port/packaging/icon/infamous-icon-1024.png" width="160" alt=""></p>
 
 <h1 align="center">inFAMOUS Second Son — port nativo para PC</h1>

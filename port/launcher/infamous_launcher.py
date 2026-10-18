@@ -3,7 +3,7 @@
 """inFAMOUS Second Son launcher (Tkinter, Linux and Windows), in pt_BR and en_US.
 
 Game folder, game and interface language, display, FPS overlay and VRAM budget; Play starts the
-game through infamous_run.py (the same code path as run_infamous.sh) and shows its log.
+game through infamous_run.py (the same code path as run_game.sh) and shows its log.
 Settings live in ~/.config/ps4-native-ports/settings.json (%APPDATA% on Windows).
 """
 import locale

@@ -9,7 +9,7 @@ Ele **não reimplementa nada**: usa `infamous_run.py` (`prepare`, `launch`, `bui
 ```bash
 python3 -m venv .venv-qt
 .venv-qt/bin/pip install -r port/launcher/qt/requirements.txt   # PySide6-Essentials >= 6.7
-./infamous_launcher_qt.sh        # ou: python3 port/launcher/infamous_launcher_qt.py
+./ps4_native_ports.sh            # ou: python3 port/launcher/infamous_launcher_qt.py
 ```
 
 No Windows: `py -m venv .venv-qt`, `.venv-qt\Scripts\pip install -r port\launcher\qt\requirements.txt` e `.venv-qt\Scripts\python port\launcher\infamous_launcher_qt.py`. Os argumentos `--play`, `--script` e `--clear-shader-cache` funcionam como no launcher Tk.

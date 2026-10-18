@@ -78,7 +78,7 @@
 ```bash
 git clone --recursive -b first-light https://github.com/Laitsberg/PS4-Native-Ports.git && cd PS4-Native-Ports
 cd port && ISS_LTO=OFF bash build.sh     # Linux; Windows — MSYS2 CLANG64, см. port/packaging/windows/README.md
-cd .. && ./infamous_launcher_qt.sh       # лаунчер на Qt (нужен PySide6)
+cd .. && ./ps4_native_ports.sh           # лаунчер на Qt (нужен PySide6)
 ```
 
 Полный процесс для обеих систем — в [`.github/workflows/build.yml`](.github/workflows/build.yml).
@@ -169,7 +169,7 @@ Second Son problems (RX 580, 4 GB VRAM, etc.) are in the [Second Son guide](docs
 ```bash
 git clone --recursive -b first-light https://github.com/Laitsberg/PS4-Native-Ports.git && cd PS4-Native-Ports
 cd port && ISS_LTO=OFF bash build.sh     # Linux; on Windows use MSYS2 CLANG64, see port/packaging/windows/README.md
-cd .. && ./infamous_launcher_qt.sh       # the Qt launcher (needs PySide6)
+cd .. && ./ps4_native_ports.sh           # the Qt launcher (needs PySide6)
 ```
 
 The full process for both platforms is in [`.github/workflows/build.yml`](.github/workflows/build.yml).
