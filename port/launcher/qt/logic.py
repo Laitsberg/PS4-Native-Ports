@@ -289,14 +289,14 @@ def _plain(text):
 
 
 def parse_news(readme_text, portuguese, count=3):
-    """The first `count` bullets of README's "Novidades" / "What's new", cut to their bold lead."""
-    heading = '## Novidades' if portuguese else "## What's new"
+    """The first `count` bullets of README's "Novidades" / "Что нового" / "What's new", cut to their bold lead."""
+    headings = ('## Novidades', '## Что нового') if portuguese else ("## What's new",)
     lines, inside = [], False
     for line in readme_text.splitlines():
         if line.startswith('## '):
             if inside:
                 break
-            inside = line.strip() == heading
+            inside = line.strip() in headings
         elif inside and line.startswith('- '):
             lead = re.match(r'- \*\*(.+?)\*\*', line)
             text = _plain(lead.group(1)) if lead else _plain(line[2:])
