@@ -23,8 +23,8 @@ Item {
             id: body
             x: page.side; y: 26; width: flick.width - 2 * page.side; spacing: 14
 
-            Text { text: Theme.tr("upd_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
-                   font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.1 }
+            Text { text: Theme.tr("upd_title"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
+                   font.weight: Font.ExtraBold; }
             Text { width: parent.width; text: Theme.tr("upd_intro"); wrapMode: Text.WordWrap; color: Theme.textDim
                    font.family: Theme.fontText; font.pixelSize: 13; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
 
@@ -42,14 +42,14 @@ Item {
                             spacing: 4
                             Text { text: Theme.tr("upd_current"); color: Theme.textMuted; font.family: Theme.fontText; font.pixelSize: 12
                                    font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 1 }
-                            Text { text: Updates.current; color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 30
+                            Text { text: Updates.current; color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 30
                                    font.weight: Font.ExtraBold; font.letterSpacing: 1 }
                         }
                         Column {
                             spacing: 4
                             Text { text: Theme.tr("upd_latest"); color: Theme.textMuted; font.family: Theme.fontText; font.pixelSize: 12
                                    font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 1 }
-                            Text { text: Updates.latest + (Updates.published !== "" ? "  ·  " + Updates.published : ""); color: Updates.available ? Theme.warn : "#fff"
+                            Text { text: Updates.latest + (Updates.published !== "" ? "  ·  " + Updates.published : ""); color: Updates.available ? Theme.warn : Theme.title
                                    font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 30
                                    font.weight: Font.ExtraBold; font.letterSpacing: 1 }
                         }
@@ -80,7 +80,7 @@ Item {
                     Column {
                         width: parent.width - sw.width - 16; spacing: 3
                         anchors.verticalCenter: parent.verticalCenter
-                        Text { text: Theme.tr("upd_check_on_open"); color: "#fff"; font.family: Theme.fontText; font.pixelSize: 15; font.weight: Font.DemiBold }
+                        Text { text: Theme.tr("upd_check_on_open"); color: Theme.title; font.family: Theme.fontText; font.pixelSize: 15; font.weight: Font.DemiBold }
                         Text { width: parent.width; text: Theme.tr("upd_check_on_open_note"); wrapMode: Text.WordWrap; color: Theme.textDim
                                font.family: Theme.fontText; font.pixelSize: 12 }
                     }
@@ -91,8 +91,8 @@ Item {
                 visible: Updates.notes !== ""
                 spacing: 10
                 Rectangle { width: 4; height: 20; color: page.accent; anchors.verticalCenter: parent.verticalCenter }
-                Text { text: Theme.tr("upd_notes"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 22
-                       font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 1.3
+                Text { text: Theme.tr("upd_notes"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 22
+                       font.weight: Font.ExtraBold;
                        anchors.verticalCenter: parent.verticalCenter }
             }
             Rectangle {
@@ -100,7 +100,7 @@ Item {
                 width: parent.width; height: notesText.implicitHeight + 36
                 radius: 12; color: Theme.card; border.width: 1; border.color: Theme.cardLine
                 TextEdit { id: notesText; x: 20; y: 18; width: parent.width - 40; text: Updates.notes; readOnly: true; selectByMouse: true
-                           wrapMode: TextEdit.Wrap; color: Theme.textSoft; selectionColor: page.accent; selectedTextColor: "#171100"
+                           wrapMode: TextEdit.Wrap; color: Theme.textSoft; selectionColor: page.accent; selectedTextColor: Theme.onAccent
                            font.family: Theme.fontText; font.pixelSize: 14 }
             }
             Item { width: 1; height: 30 }

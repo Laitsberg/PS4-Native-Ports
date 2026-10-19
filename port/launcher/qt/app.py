@@ -17,8 +17,8 @@ from .graphics import Graphics
 
 HERE = Path(__file__).resolve().parent
 QML_ROOT = HERE / 'qml'
-FONT_DISPLAY = 'Big Shoulders Stencil Display'
-FONT_TEXT = 'Barlow'
+FONT_DISPLAY = 'Unbounded'
+FONT_TEXT = 'Golos Text'
 
 
 def load_fonts():

@@ -18,9 +18,8 @@ Rectangle {
         Column {
             id: col
             x: 24; y: 24; width: parent.width - 48; spacing: 12
-            Text { width: parent.width; text: d.title || ""; color: "#fff"; wrapMode: Text.WordWrap
-                   font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 28; font.weight: Font.ExtraBold
-                   font.capitalization: Font.AllUppercase; font.letterSpacing: 1.4 }
+            Text { width: parent.width; text: d.title || ""; color: Theme.title; wrapMode: Text.WordWrap
+                   font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 28; font.weight: Font.ExtraBold }
             Text { width: parent.width; text: d.body || ""; color: Theme.textSoft; wrapMode: Text.WordWrap
                    font.family: Theme.fontText; font.pixelSize: 14; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
             Column {

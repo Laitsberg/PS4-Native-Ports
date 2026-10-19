@@ -15,14 +15,14 @@ Slider {
     Timer { id: settle; interval: 380; onTriggered: root.committed(root.value) }
     background: Rectangle {
         x: root.leftPadding; y: root.topPadding + root.availableHeight / 2 - height / 2
-        width: root.availableWidth; height: 6; radius: 3; color: "#262b33"
+        width: root.availableWidth; height: 6; radius: 3; color: Theme.track
         Rectangle { width: root.visualPosition * parent.width; height: parent.height; radius: 3; color: root.accent }
     }
     handle: Rectangle {
         x: root.leftPadding + root.visualPosition * (root.availableWidth - width)
         y: root.topPadding + root.availableHeight / 2 - height / 2
         width: 18; height: 18; radius: 9
-        color: root.pressed ? Qt.lighter(root.accent, 1.25) : "#f1efe9"
+        color: root.pressed ? Qt.lighter(root.accent, 1.25) : Theme.knob
         border.width: 2; border.color: root.accent
     }
 }

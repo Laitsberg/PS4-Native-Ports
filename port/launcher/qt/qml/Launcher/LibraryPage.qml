@@ -23,8 +23,8 @@ Item {
                 width: parent.width; spacing: 6
                 Text { text: Theme.tr("brand"); color: page.accent; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 })
                        font.pixelSize: 15; font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 4.5 }
-                Text { text: Theme.tr("library_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 })
-                       font.pixelSize: 52; font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.4 }
+                Text { text: Theme.tr("library_title"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 })
+                       font.pixelSize: 52; font.weight: Font.ExtraBold; }
                 Text { width: Math.min(parent.width, 720); text: Theme.tr("library_hint"); wrapMode: Text.WordWrap; color: Theme.textSoft
                        font.family: Theme.fontText; font.pixelSize: 14; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
             }
@@ -65,7 +65,7 @@ Item {
                                 visible: modelData.current || !modelData.present || !modelData.known
                                 x: 10; y: 10; radius: 6; height: 24; width: badge.implicitWidth + 16
                                 color: !modelData.present ? Theme.bad : modelData.current ? page.accent : Theme.warn
-                                Text { id: badge; anchors.centerIn: parent; color: "#120c08"
+                                Text { id: badge; anchors.centerIn: parent; color: Theme.onAccent
                                        text: !modelData.present ? Theme.tr("library_missing")
                                              : modelData.current ? Theme.tr("library_selected") : Theme.tr("library_untested")
                                        font.family: Theme.fontText; font.pixelSize: 11; font.weight: Font.Bold }
@@ -85,7 +85,7 @@ Item {
                         Column {
                             anchors.top: cover.bottom; anchors.topMargin: 10
                             width: parent.width; spacing: 2
-                            Text { width: parent.width; text: modelData.title; elide: Text.ElideRight; color: modelData.current ? "#fff" : Theme.text
+                            Text { width: parent.width; text: modelData.title; elide: Text.ElideRight; color: modelData.current ? Theme.title : Theme.text
                                    font.family: Theme.fontText; font.pixelSize: 15; font.weight: Font.Bold }
                             Text { width: parent.width; elide: Text.ElideRight; color: Theme.textDim
                                    text: [modelData.title_id, modelData.version ? "v" + modelData.version : ""].filter(Boolean).join(" · ")

@@ -13,8 +13,8 @@ Item {
         property string text: ""
         spacing: 10
         Rectangle { width: 4; height: 20; color: page.accent; anchors.verticalCenter: parent.verticalCenter }
-        Text { text: parent.text; color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 22
-               font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 1.3
+        Text { text: parent.text; color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 22
+               font.weight: Font.ExtraBold;
                anchors.verticalCenter: parent.verticalCenter }
     }
     component Body: Text {
@@ -26,7 +26,7 @@ Item {
         property alias text: edit.text
         property int boxHeight: 150
         width: parent ? parent.width : 400; height: boxHeight
-        radius: 10; color: "#0e1014"; border.width: 1; border.color: Theme.cardLine
+        radius: 10; color: Theme.well; border.width: 1; border.color: Theme.cardLine
         Flickable {
             id: fl
             anchors.fill: parent; anchors.margins: 10
@@ -38,7 +38,7 @@ Item {
                 background: Item { }
             }
             TextEdit { id: edit; width: fl.width - 8; readOnly: true; selectByMouse: true; wrapMode: TextEdit.Wrap
-                       color: Theme.textSoft; selectionColor: page.accent; selectedTextColor: "#00131a"
+                       color: Theme.textSoft; selectionColor: page.accent; selectedTextColor: Theme.onAccent
                        font.family: "monospace"; font.pixelSize: 12 }
         }
     }
@@ -60,8 +60,8 @@ Item {
             id: body
             x: page.side; y: 26; width: flick.width - 2 * page.side; spacing: 14
 
-            Text { text: Theme.tr("sup_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
-                   font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.1 }
+            Text { text: Theme.tr("sup_title"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
+                   font.weight: Font.ExtraBold; }
             Body { text: Theme.tr("sup_intro") }
 
             // ---- known problems for the GPU -----------------------------------------------------------
@@ -91,7 +91,7 @@ Item {
                             x: 20; y: 15; width: parent.width - 40; spacing: 6
                             Row {
                                 spacing: 10
-                                Text { text: modelData.title; color: "#fff"; font.family: Theme.fontText; font.pixelSize: 16; font.weight: Font.DemiBold
+                                Text { text: modelData.title; color: Theme.title; font.family: Theme.fontText; font.pixelSize: 16; font.weight: Font.DemiBold
                                        anchors.verticalCenter: parent.verticalCenter }
                                 Tag { visible: modelData.matched; text: Theme.tr("sup_known_match"); tone: "warn"; anchors.verticalCenter: parent.verticalCenter }
                             }
@@ -115,7 +115,7 @@ Item {
                         width: stepText.implicitWidth + 32; height: 34; radius: 17
                         color: on ? Qt.rgba(Theme.cyan.r, Theme.cyan.g, Theme.cyan.b, 0.16) : Theme.chip
                         border.width: 1; border.color: on ? Theme.cyan : Theme.chipLine
-                        Text { id: stepText; anchors.centerIn: parent; text: Theme.tr(modelData); color: parent.on ? "#fff" : Theme.textMuted
+                        Text { id: stepText; anchors.centerIn: parent; text: Theme.tr(modelData); color: parent.on ? Theme.title : Theme.textMuted
                                font.family: Theme.fontText; font.pixelSize: 13; font.weight: Font.Bold }
                         MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Support.setStep(index) }
                     }
@@ -142,7 +142,7 @@ Item {
                                 spacing: 14; width: stepCol.width
                                 Text { width: 130; text: modelData.label; color: Theme.textMuted; font.family: Theme.fontText; font.pixelSize: 14
                                        font.weight: Font.Bold }
-                                Text { width: parent.width - 144; text: modelData.value; color: "#fff"; wrapMode: Text.WordWrap
+                                Text { width: parent.width - 144; text: modelData.value; color: Theme.title; wrapMode: Text.WordWrap
                                        font.family: Theme.fontText; font.pixelSize: 14 }
                             }
                         }
@@ -157,7 +157,7 @@ Item {
                         Rectangle {
                             visible: Support.hasLogs
                             width: parent.width; height: Math.min(Support.logs.length, 4) * 42 + 2
-                            radius: 10; color: "#0e1014"; border.width: 1; border.color: Theme.cardLine
+                            radius: 10; color: Theme.well; border.width: 1; border.color: Theme.cardLine
                             clip: true
                             ListView {
                                 id: logList
@@ -170,7 +170,7 @@ Item {
                                     Rectangle { x: 14; anchors.verticalCenter: parent.verticalCenter; width: 14; height: 14; radius: 7
                                                 color: "transparent"; border.width: 2; border.color: modelData.selected ? Theme.cyan : Theme.off
                                                 Rectangle { anchors.centerIn: parent; width: 6; height: 6; radius: 3; color: Theme.cyan; visible: modelData.selected } }
-                                    Text { x: 42; anchors.verticalCenter: parent.verticalCenter; text: modelData.name; color: "#fff"
+                                    Text { x: 42; anchors.verticalCenter: parent.verticalCenter; text: modelData.name; color: Theme.title
                                            font.family: Theme.fontText; font.pixelSize: 14; font.weight: Font.DemiBold }
                                     Tag { visible: modelData.latest; x: 250; anchors.verticalCenter: parent.verticalCenter; text: Theme.tr("sup_latest"); tone: "good" }
                                     Text { anchors.right: parent.right; anchors.rightMargin: 16; anchors.verticalCenter: parent.verticalCenter
@@ -198,7 +198,7 @@ Item {
                         Text { text: Theme.tr("sup_describe"); color: Theme.textMuted; font.family: Theme.fontText; font.pixelSize: 13
                                font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 1 }
                         Rectangle {
-                            width: parent.width; height: 92; radius: 10; color: "#0e1014"; border.width: 1
+                            width: parent.width; height: 92; radius: 10; color: Theme.well; border.width: 1
                             border.color: desc.activeFocus ? page.accent : Theme.cardLine
                             Flickable {
                                 id: descFlick
@@ -207,8 +207,8 @@ Item {
                                 boundsBehavior: Flickable.StopAtBounds
                                 TextArea.flickable: TextArea {
                                     id: desc
-                                    wrapMode: TextEdit.Wrap; color: "#fff"; selectByMouse: true
-                                    selectionColor: page.accent; selectedTextColor: "#00131a"
+                                    wrapMode: TextEdit.Wrap; color: Theme.title; selectByMouse: true
+                                    selectionColor: page.accent; selectedTextColor: Theme.onAccent
                                     placeholderText: Theme.tr("sup_describe_hint"); placeholderTextColor: Theme.textFaint
                                     font.family: Theme.fontText; font.pixelSize: 14
                                     padding: 0; background: null
@@ -259,7 +259,7 @@ Item {
         height: msg.implicitHeight + 24; radius: 10
         readonly property color tone: Support.tone === "bad" ? Theme.bad : Support.tone === "good" ? Theme.ok
                                       : Support.tone === "warn" ? Theme.warn : Theme.textMuted
-        color: "#0e1014"; border.width: 1; border.color: Qt.rgba(tone.r, tone.g, tone.b, 0.7)
+        color: Theme.well; border.width: 1; border.color: Qt.rgba(tone.r, tone.g, tone.b, 0.7)
         Text { id: msg; x: 16; y: 12; width: parent.width - 60; text: Support.message; wrapMode: Text.WordWrap; color: Theme.text
                font.family: Theme.fontText; font.pixelSize: 13; lineHeight: 1.3; lineHeightMode: Text.ProportionalHeight }
         Text { text: "✕"; color: Theme.textMuted; anchors.right: parent.right; anchors.rightMargin: 16; y: 12; font.pixelSize: 14

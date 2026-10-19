@@ -21,7 +21,7 @@ Rectangle {
                 : tone === "danger" ? Qt.rgba(toneColor.r, toneColor.g, toneColor.b, 0.6)
                 : (mouse.containsMouse ? Theme.ghostLineHover : Theme.ghostLine)
     Text { id: label; anchors.centerIn: parent; text: root.text
-           color: root.tone === "primary" ? "#06140c" : root.tone === "danger" ? root.toneColor : Theme.text
+           color: root.tone === "primary" ? Theme.onAccent : root.tone === "danger" ? root.toneColor : Theme.text
            font.family: Theme.fontText; font.pixelSize: 14; font.weight: Font.DemiBold
            elide: Text.ElideRight; width: Math.min(implicitWidth, parent.width - 16); horizontalAlignment: Text.AlignHCenter }
     MouseArea { id: mouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor

@@ -59,7 +59,7 @@ Item {
             Text { text: Backend.heroKicker; color: page.accent; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 }); font.pixelSize: 15
                    font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 4.5 }
             Text { text: Backend.heroTagline; width: hero.width - 420; wrapMode: Text.WordWrap; maximumLineCount: 2; elide: Text.ElideRight; color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 64
-                   font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 3.2
+                   font.weight: Font.ExtraBold;
                    lineHeight: 0.95; lineHeightMode: Text.ProportionalHeight }
         }
         Column {
@@ -85,24 +85,24 @@ Item {
                     id: playBtn
                     anchors.fill: parent
                     radius: 14
-                    color: !Backend.canPlay ? "#3a2a22" : (playMouse.containsMouse ? Qt.lighter(page.accent, 1.1) : page.accent)
+                    color: !Backend.canPlay ? Theme.disabledFill : (playMouse.containsMouse ? Qt.lighter(page.accent, 1.1) : page.accent)
                     Column {
                         anchors.verticalCenter: parent.verticalCenter
                         x: 24; spacing: 2
                         Text { text: Theme.tr("play_label"); font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 34
-                               font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 1.7
-                               color: Backend.canPlay ? "#160a04" : "#8a6a5a"; lineHeight: 0.95; lineHeightMode: Text.ProportionalHeight }
+                               font.weight: Font.ExtraBold;
+                               color: Backend.canPlay ? Theme.onAccent : Theme.disabledText; lineHeight: 0.95; lineHeightMode: Text.ProportionalHeight }
                         Text { text: Backend.playSubtitle; width: playBtn.width - 48; elide: Text.ElideRight
                                font.family: Theme.fontText; font.pixelSize: 13; font.weight: Font.DemiBold
-                               color: Backend.canPlay ? "#160a04" : "#8a6a5a" }
+                               color: Backend.canPlay ? Theme.onAccent : Theme.disabledText }
                     }
                     Rectangle {   // shader list progress (first start): thin bar along the button's bottom edge
                         visible: Backend.jobsProgressValue >= 0
                         x: 24; width: playBtn.width - 48; height: 4; radius: 2
                         anchors.bottom: parent.bottom; anchors.bottomMargin: 8
-                        color: "#5a3a2a"
+                        color: Qt.rgba(1, 1, 1, 0.35)
                         Rectangle { width: parent.width * Math.max(0, Backend.jobsProgressValue); height: parent.height
-                                    radius: 2; color: "#160a04" }
+                                    radius: 2; color: Theme.onAccent }
                     }
                     MouseArea { id: playMouse; anchors.fill: parent; hoverEnabled: true
                                 enabled: Backend.canPlay; cursorShape: Qt.PointingHandCursor; onClicked: Backend.play() }
@@ -120,23 +120,27 @@ Item {
                 text: "♥  " + Theme.tr("sponsor_label")
                 onClicked: Backend.openUrl("sponsor")
             }
-            Column {   // game language (voice and text): next start; the interface language is separate
-                width: parent.width; spacing: 4
-                Row {
-                    spacing: 10
-                    Text { text: Theme.tr("game_language_label"); color: Theme.textMuted; font.family: Theme.fontText; font.pixelSize: 12; font.weight: Font.Bold
-                           width: 60; wrapMode: Text.WordWrap; anchors.verticalCenter: parent.verticalCenter }
-                    Select {
-                        accent: page.accent; width: actions.width - 70
-                        model: Backend.gameLanguageOptions
-                        currentIndex: Backend.gameLanguageIndex
-                        onActivated: (i) => Backend.setGameLanguage(Backend.gameLanguageOptions[i].value)
+            Rectangle {   // game language (voice and text), on a card: readable over the hero image
+                width: parent.width; height: langCol.implicitHeight + 20; radius: 12; color: Theme.card
+                Column {   // next start; the interface language is separate
+                    id: langCol
+                    x: 12; y: 10; width: parent.width - 24; spacing: 4
+                    Row {
+                        spacing: 10
+                        Text { text: Theme.tr("game_language_label"); color: Theme.textMuted; font.family: Theme.fontText; font.pixelSize: 12; font.weight: Font.Bold
+                               width: 60; wrapMode: Text.WordWrap; anchors.verticalCenter: parent.verticalCenter }
+                        Select {
+                            accent: page.accent; width: langCol.width - 70
+                            model: Backend.gameLanguageOptions
+                            currentIndex: Backend.gameLanguageIndex
+                            onActivated: (i) => Backend.setGameLanguage(Backend.gameLanguageOptions[i].value)
+                        }
                     }
+                    Text { visible: Backend.gameLanguageNow !== ""; width: parent.width; text: Backend.gameLanguageNow; color: page.accent
+                           font.family: Theme.fontText; font.pixelSize: 12; font.weight: Font.Bold }
+                    Text { width: parent.width; text: Theme.tr("game_language_hint"); wrapMode: Text.WordWrap; color: Theme.textSoft
+                           font.family: Theme.fontText; font.pixelSize: 12; lineHeight: 1.2; lineHeightMode: Text.ProportionalHeight }
                 }
-                Text { visible: Backend.gameLanguageNow !== ""; width: parent.width; text: Backend.gameLanguageNow; color: page.accent
-                       font.family: Theme.fontText; font.pixelSize: 12; font.weight: Font.Bold }
-                Text { width: parent.width; text: Theme.tr("game_language_hint"); wrapMode: Text.WordWrap; color: Theme.textSoft
-                       font.family: Theme.fontText; font.pixelSize: 12; lineHeight: 1.2; lineHeightMode: Text.ProportionalHeight }
             }
         }
     }
@@ -215,7 +219,7 @@ Item {
             Column {
                 x: 18; y: 16; width: parent.width - 36; spacing: 10
                 Text { text: Theme.tr("news_title") + (Backend.version ? " · " + Backend.version : "")
-                       color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 }); font.pixelSize: 18; font.weight: Font.Bold
+                       color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 }); font.pixelSize: 18; font.weight: Font.Bold
                        font.capitalization: Font.AllUppercase; font.letterSpacing: 0.9 }
                 Column {
                     width: parent.width; spacing: 3
@@ -243,7 +247,7 @@ Item {
     Rectangle {
         visible: Backend.playState !== "idle" || (Backend.logText !== "" && Backend.logShown)
         anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom
-        height: 140; color: "#0a0b0e"; border.width: 1; border.color: Theme.cardLine
+        height: 140; color: Theme.well; border.width: 1; border.color: Theme.cardLine
         Flickable {
             id: flick
             anchors.fill: parent; anchors.margins: 10; clip: true

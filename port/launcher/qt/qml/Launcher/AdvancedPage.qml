@@ -21,8 +21,8 @@ Item {
             topPadding: 26; bottomPadding: 8
             Row {
                 spacing: 16
-                Text { text: Theme.tr("adv_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
-                       font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.1
+                Text { text: Theme.tr("adv_title"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
+                       font.weight: Font.ExtraBold;
                        anchors.verticalCenter: parent.verticalCenter }
                 Rectangle {
                     anchors.verticalCenter: parent.verticalCenter

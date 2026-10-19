@@ -14,8 +14,8 @@ Item {
         property string text: ""
         spacing: 10
         Rectangle { width: 4; height: 20; color: page.accent; anchors.verticalCenter: parent.verticalCenter }
-        Text { text: parent.text; color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 22
-               font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 1.3
+        Text { text: parent.text; color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 22
+               font.weight: Font.ExtraBold;
                anchors.verticalCenter: parent.verticalCenter }
     }
     component Note: Item {
@@ -44,8 +44,8 @@ Item {
             id: body
             x: page.side; y: 26; width: flick.width - 2 * page.side; spacing: 14
 
-            Text { text: Theme.tr("saves_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
-                   font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.1 }
+            Text { text: Theme.tr("saves_title"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
+                   font.weight: Font.ExtraBold; }
             Text { width: parent.width; text: Theme.tr("saves_intro"); wrapMode: Text.WordWrap; color: Theme.textDim
                    font.family: Theme.fontText; font.pixelSize: 13; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
             Note { visible: Saves.running; text: Theme.tr("saves_running"); bar: Theme.bad }
@@ -64,7 +64,7 @@ Item {
                                font.capitalization: Font.AllUppercase; font.letterSpacing: 0.9; anchors.verticalCenter: parent.verticalCenter }
                         Tag { text: Saves.sourceText; tone: Saves.source === "default" ? "warn" : "good"; anchors.verticalCenter: parent.verticalCenter }
                     }
-                    Text { width: parent.width; text: Saves.userDir; color: "#fff"; wrapMode: Text.WrapAnywhere
+                    Text { width: parent.width; text: Saves.userDir; color: Theme.title; wrapMode: Text.WrapAnywhere
                            font.family: Theme.fontText; font.pixelSize: 17; font.weight: Font.DemiBold }
                     Note { visible: Saves.source === "default"; text: Theme.tr("saves_portable_warn") }
                     Note { visible: !Saves.canChange; text: Theme.tr("saves_env_locked"); bar: Theme.bad }
@@ -144,7 +144,7 @@ Item {
                     Row {
                         spacing: 10
                         Text { width: Math.min(implicitWidth, body.width - 330); text: Saves.extraDir || Theme.tr("backups_extra_none"); elide: Text.ElideMiddle
-                               color: Saves.extraDir ? "#fff" : Theme.textFaint; font.family: Theme.fontText; font.pixelSize: 14
+                               color: Saves.extraDir ? Theme.title : Theme.textFaint; font.family: Theme.fontText; font.pixelSize: 14
                                anchors.verticalCenter: parent.verticalCenter }
                         GhostButton { compact: true; text: Theme.tr("backups_extra_choose"); onClicked: { folderPurpose = "extra"; folderDialog.open() } }
                         GhostButton { compact: true; visible: Saves.extraDir !== ""; text: Theme.tr("backups_extra_clear"); onClicked: Saves.clearExtra() }
@@ -158,7 +158,7 @@ Item {
                     width: body.width; height: 56; radius: 10; color: Theme.card; border.width: 1; border.color: Theme.cardLine
                     Column {
                         x: 18; anchors.verticalCenter: parent.verticalCenter; spacing: 2
-                        Text { text: modelData.when; color: "#fff"; font.family: Theme.fontText; font.pixelSize: 15; font.weight: Font.DemiBold }
+                        Text { text: modelData.when; color: Theme.title; font.family: Theme.fontText; font.pixelSize: 15; font.weight: Font.DemiBold }
                         Text { text: modelData.info; color: Theme.textDim; font.family: Theme.fontText; font.pixelSize: 12 }
                     }
                     GhostButton { compact: true; text: Theme.tr("saves_restore"); enabled: !Saves.running
@@ -178,7 +178,7 @@ Item {
         height: msg.implicitHeight + 24; radius: 10
         readonly property color tone: Saves.messageTone === "bad" ? Theme.bad : Saves.messageTone === "good" ? Theme.ok
                                       : Saves.messageTone === "warn" ? Theme.warn : Theme.textMuted
-        color: "#0e1014"; border.width: 1; border.color: Qt.rgba(tone.r, tone.g, tone.b, 0.7)
+        color: Theme.well; border.width: 1; border.color: Qt.rgba(tone.r, tone.g, tone.b, 0.7)
         Text { id: msg; x: 16; y: 12; width: parent.width - 60; text: Saves.message; wrapMode: Text.WordWrap; color: Theme.text
                font.family: Theme.fontText; font.pixelSize: 13; lineHeight: 1.3; lineHeightMode: Text.ProportionalHeight }
         Text { text: "✕"; color: Theme.textMuted; anchors.right: parent.right; anchors.rightMargin: 16; y: 12

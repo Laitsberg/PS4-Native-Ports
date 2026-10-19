@@ -16,8 +16,7 @@ Item {
         Row {
             spacing: 10
             Rectangle { width: 4; height: 20; color: row.accent; anchors.verticalCenter: parent.verticalCenter }
-            Text { text: d.title || ""; color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 22; font.weight: Font.ExtraBold
-                   font.capitalization: Font.AllUppercase; font.letterSpacing: 1.3; anchors.verticalCenter: parent.verticalCenter }
+            Text { text: d.title || ""; color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 22; font.weight: Font.ExtraBold; anchors.verticalCenter: parent.verticalCenter }
         }
         Text { visible: !!d.note; x: 14; text: d.note || ""; color: Theme.textDim; font.family: Theme.fontText; font.pixelSize: 12 }
     }

@@ -5,40 +5,50 @@ import Launcher
 // Every color, size and font of the launcher lives here (single source for the visual identity).
 QtObject {
     // surfaces
-    readonly property color bg: "#101216"
-    readonly property color rail: "#0d0f12"
-    readonly property color railLine: "#1e2228"
-    readonly property color navHover: "#1a1d23"
-    readonly property color navOn: "#1d2027"
-    readonly property color navOnLine: "#2c313a"
-    readonly property color card: "#15181d"
-    readonly property color cardLine: "#262b33"
-    readonly property color chip: "#171a20"
-    readonly property color chipLine: "#2a2f38"
-    readonly property color ghost: "#1a1d23"
-    readonly property color ghostHover: "#22262e"
-    readonly property color ghostLine: "#303641"
-    readonly property color ghostLineHover: "#444b59"
+    readonly property color bg: "#111418"
+    readonly property color rail: "#0c0e11"
+    readonly property color railLine: "#22272e"
+    readonly property color navHover: "#1b1f24"
+    readonly property color navOn: "#f2f3f5"
+    readonly property color navOnLine: "#f2f3f5"
+    readonly property color card: "#1b1f24"
+    readonly property color cardLine: "#2a3038"
+    readonly property color chip: "#1b1f24"
+    readonly property color chipLine: "#323943"
+    readonly property color ghost: "#1b1f24"
+    readonly property color ghostHover: "#252a31"
+    readonly property color ghostLine: "#353c46"
+    readonly property color ghostLineHover: "#4a525c"
     // text
-    readonly property color text: "#e9e6df"
-    readonly property color textSoft: "#c9c5bd"
-    readonly property color textChip: "#d8d5ce"
-    readonly property color textMuted: "#a3a9b3"
-    readonly property color textDim: "#8e949f"
-    readonly property color textFaint: "#7d838e"
+    readonly property color text: "#f2f3f5"
+    readonly property color textSoft: "#d0d4da"
+    readonly property color textChip: "#d0d4da"
+    readonly property color textMuted: "#a3abb5"
+    readonly property color textDim: "#97a0aa"
+    readonly property color textFaint: "#8a929c"
     // states
-    readonly property color ok: "#35d07f"
-    readonly property color warn: "#f5c400"   // the checkpoint-tape yellow
-    readonly property color bad: "#ff4d4d"
-    readonly property color off: "#5a606b"
+    readonly property color ok: "#2fbf71"
+    readonly property color warn: "#b86e00"   // amber: white badge text still readable
+    readonly property color bad: "#e5484d"
+    // on fills and controls
+    readonly property color title: "#f5f6f8"      // headings and values on the page and on cards
+    readonly property color onAccent: "#ffffff"   // text on accent, state and disabled fills
+    readonly property color onNav: "#111418"      // text on the black pill of the current item
+    readonly property color well: "#0b0d10"       // inputs, logs, image wells
+    readonly property color track: "#3a414a"      // switch and slider tracks
+    readonly property color trackLine: "#4a525c"
+    readonly property color knob: "#ffffff"
+    readonly property color disabledFill: "#2a3038"
+    readonly property color disabledText: "#8a929c"
+    readonly property color off: "#5f6773"
     // one accent per section
-    readonly property color smoke: "#ff6a2b"  // Play, Fixes
+    readonly property color smoke: "#e2412e"  // Play, Fixes
     readonly property color video: "#4d8bff"  // Graphics
-    readonly property color neon: "#ff3d9a"   // Controls
-    readonly property color cyan: "#19e3ff"   // Support
-    readonly property var accents: ({ library: "#b48cff", play: "#ff6a2b", graphics: "#4d8bff", controls: "#ff3d9a",
-                                      fixes: "#ff6a2b", saves: "#35d07f", guides: "#ff3d9a", support: "#19e3ff",
-                                      updates: "#f5c400", advanced: "#8e7bff", mods: "#2bd9c4" })
+    readonly property color neon: "#e2412e"   // Controls
+    readonly property color cyan: "#4d8bff"   // Support
+    readonly property var accents: ({ library: "#e2412e", play: "#e2412e", graphics: "#e2412e", controls: "#e2412e",
+                                      fixes: "#e2412e", saves: "#e2412e", guides: "#e2412e", support: "#e2412e",
+                                      updates: "#e2412e", advanced: "#e2412e", mods: "#e2412e" })
     // type
     property string fontDisplay: Backend.fontDisplay
     property string fontText: Backend.fontText

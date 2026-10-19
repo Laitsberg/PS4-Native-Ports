@@ -25,11 +25,11 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         x: 14
         spacing: 12
-        Icon { path: root.iconPath; color: root.current || mouse.containsMouse ? "#ffffff" : Theme.textMuted; size: 20
+        Icon { path: root.iconPath; color: root.current ? Theme.onNav : mouse.containsMouse ? Theme.title : Theme.textMuted; size: 20
                anchors.verticalCenter: parent.verticalCenter }
         Text {
             text: root.label
-            color: root.current || mouse.containsMouse ? "#ffffff" : Theme.textMuted
+            color: root.current ? Theme.onNav : mouse.containsMouse ? Theme.title : Theme.textMuted
             font.family: Theme.fontText; font.pixelSize: 15; font.weight: Font.DemiBold
             anchors.verticalCenter: parent.verticalCenter
         }

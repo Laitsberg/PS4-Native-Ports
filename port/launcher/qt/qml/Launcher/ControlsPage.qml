@@ -33,8 +33,8 @@ Item {
             id: body
             x: page.side; y: 26; width: flick.width - 2 * page.side; spacing: 14
 
-            Text { text: Theme.tr("ctl_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
-                   font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.1 }
+            Text { text: Theme.tr("ctl_title"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
+                   font.weight: Font.ExtraBold; }
             Text { width: parent.width; text: Theme.tr("ctl_intro"); wrapMode: Text.WordWrap; color: Theme.textDim
                    font.family: Theme.fontText; font.pixelSize: 13; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
 
@@ -43,7 +43,7 @@ Item {
             Card {
                 Row {
                     spacing: 12
-                    Text { text: PadControls.padName; color: "#fff"; font.family: Theme.fontText; font.pixelSize: 20; font.weight: Font.Bold
+                    Text { text: PadControls.padName; color: Theme.title; font.family: Theme.fontText; font.pixelSize: 20; font.weight: Font.Bold
                            anchors.verticalCenter: parent.verticalCenter }
                     Tag { text: PadControls.padKindText; tone: PadControls.padFound ? "good" : "info"; visible: PadControls.padFound; anchors.verticalCenter: parent.verticalCenter }
                 }
@@ -124,8 +124,8 @@ Item {
                             Rectangle {
                                 id: keyChip
                                 width: keyText.implicitWidth + 20; height: 28; radius: 6
-                                color: "#1d2027"; border.width: 1; border.color: "#3a404b"
-                                Text { id: keyText; anchors.centerIn: parent; text: modelData.keys; color: "#fff"
+                                color: Theme.well; border.width: 1; border.color: Theme.trackLine
+                                Text { id: keyText; anchors.centerIn: parent; text: modelData.keys; color: Theme.title
                                        font.family: Theme.fontText; font.pixelSize: 13; font.weight: Font.Bold }
                             }
                         }
@@ -144,7 +144,7 @@ Item {
                     width: parent.width; height: 40
                     placeholderText: Theme.tr("keymap_placeholder")
                     placeholderTextColor: Theme.textFaint
-                    color: "#fff"; selectByMouse: true
+                    color: Theme.title; selectByMouse: true
                     font.family: Theme.fontText; font.pixelSize: 14
                     leftPadding: 12; rightPadding: 12
                     background: Rectangle { radius: 8; color: Theme.ghost; border.width: 1

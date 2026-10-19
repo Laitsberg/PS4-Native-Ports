@@ -14,7 +14,7 @@ python3 -m venv .venv-qt
 
 No Windows: `py -m venv .venv-qt`, `.venv-qt\Scripts\pip install -r port\launcher\qt\requirements.txt` e `.venv-qt\Scripts\python port\launcher\infamous_launcher_qt.py`. Os argumentos `--play`, `--script` e `--clear-shader-cache` funcionam como no launcher Tk.
 
-Sem PySide6 o ponto de entrada imprime como instalar e sai. As fontes (Big Shoulders Stencil Display e Barlow, licença OFL, arquivos `OFL-*.txt`) ficam em `port/launcher/qt/fonts/` e são carregadas na execução; sem elas, cai a fonte do sistema.
+Sem PySide6 o ponto de entrada imprime como instalar e sai. As fontes (Unbounded e Golos Text, licença OFL, arquivos `OFL-*.txt`) ficam em `port/launcher/qt/fonts/` e são carregadas na execução; sem elas, cai a fonte do sistema.
 
 ## Idioma do jogo (Início)
 

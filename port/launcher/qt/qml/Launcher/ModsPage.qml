@@ -18,8 +18,8 @@ Item {
         header: Column {
             width: list.width; spacing: 10
             topPadding: 26; bottomPadding: 8
-            Text { text: Theme.tr("mods_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
-                   font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.1 }
+            Text { text: Theme.tr("mods_title"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
+                   font.weight: Font.ExtraBold; }
             Text { width: parent.width; text: Theme.tr("mods_intro"); wrapMode: Text.WordWrap; color: Theme.textDim
                    font.family: Theme.fontText; font.pixelSize: 13; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
             Item {

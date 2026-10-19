@@ -25,8 +25,8 @@ Item {
             id: body
             x: page.side; y: 26; width: flick.width - 2 * page.side; spacing: 14
 
-            Text { text: Theme.tr("gfx_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
-                   font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.1 }
+            Text { text: Theme.tr("gfx_title"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
+                   font.weight: Font.ExtraBold; }
             Text { width: parent.width; text: Theme.tr("gfx_intro"); wrapMode: Text.WordWrap; color: Theme.textDim
                    font.family: Theme.fontText; font.pixelSize: 13; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
 
@@ -76,8 +76,8 @@ Item {
                             x: 14; y: 13; width: parent.width - 28; spacing: 7
                             Flow {
                                 width: parent.width; spacing: 8
-                                Text { text: modelData.label; color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 20
-                                       font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 0.8
+                                Text { text: modelData.label; color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 16
+                                       font.weight: Font.ExtraBold;
                                        width: Math.min(implicitWidth, parent.width); wrapMode: Text.WordWrap }
                                 Tag { visible: modelData.standard; text: Theme.tr("gfx_preset_standard"); tone: "good" }
                             }
@@ -121,7 +121,7 @@ Item {
                 Column {
                     id: cacheCol
                     x: 18; y: 18; width: parent.width - 36; spacing: 10
-                    Text { text: Graphics.cacheText; color: "#fff"; font.family: Theme.fontText; font.pixelSize: 17; font.weight: Font.DemiBold }
+                    Text { text: Graphics.cacheText; color: Theme.title; font.family: Theme.fontText; font.pixelSize: 17; font.weight: Font.DemiBold }
                     Text { width: parent.width; text: Theme.tr("gfx_cache_hint"); wrapMode: Text.WordWrap; color: Theme.textDim
                            font.family: Theme.fontText; font.pixelSize: 13; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
                     NoteBar { visible: Graphics.gameRunning; text: Theme.tr("gfx_cache_running"); bar: Theme.bad }
@@ -156,24 +156,23 @@ Item {
             Column {
                 id: exportCol
                 x: 24; y: 24; width: parent.width - 48; spacing: 12
-                Text { width: parent.width; text: Theme.tr("ps_export_title"); color: "#fff"; wrapMode: Text.WordWrap
-                       font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 28; font.weight: Font.ExtraBold
-                       font.capitalization: Font.AllUppercase; font.letterSpacing: 1.4 }
+                Text { width: parent.width; text: Theme.tr("ps_export_title"); color: Theme.title; wrapMode: Text.WordWrap
+                       font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 28; font.weight: Font.ExtraBold }
                 Text { width: parent.width; text: Theme.tr("ps_export_hint"); color: Theme.textSoft; wrapMode: Text.WordWrap
                        font.family: Theme.fontText; font.pixelSize: 14; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
                 Text { text: Theme.tr("ps_name"); color: Theme.textDim; font.family: Theme.fontText; font.pixelSize: 13 }
                 TextField {
                     id: nameField
-                    width: parent.width; color: "#fff"; selectByMouse: true; maximumLength: 80
-                    selectionColor: page.accent; selectedTextColor: "#00131a"
+                    width: parent.width; color: Theme.title; selectByMouse: true; maximumLength: 80
+                    selectionColor: page.accent; selectedTextColor: Theme.onAccent
                     font.family: Theme.fontText; font.pixelSize: 14; leftPadding: 12; rightPadding: 12; topPadding: 9; bottomPadding: 9
                     background: Rectangle { radius: 8; color: Theme.chip; border.width: 1; border.color: nameField.activeFocus ? page.accent : Theme.ghostLine }
                 }
                 Text { text: Theme.tr("ps_what"); color: Theme.textDim; font.family: Theme.fontText; font.pixelSize: 13 }
                 TextField {
                     id: whatField
-                    width: parent.width; color: "#fff"; selectByMouse: true; maximumLength: 300
-                    selectionColor: page.accent; selectedTextColor: "#00131a"
+                    width: parent.width; color: Theme.title; selectByMouse: true; maximumLength: 300
+                    selectionColor: page.accent; selectedTextColor: Theme.onAccent
                     font.family: Theme.fontText; font.pixelSize: 14; leftPadding: 12; rightPadding: 12; topPadding: 9; bottomPadding: 9
                     background: Rectangle { radius: 8; color: Theme.chip; border.width: 1; border.color: whatField.activeFocus ? page.accent : Theme.ghostLine }
                 }

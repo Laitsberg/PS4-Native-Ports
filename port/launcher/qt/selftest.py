@@ -49,7 +49,7 @@ def run():
     here = app_mod.HERE
     check((here / 'qml' / 'Launcher' / 'qmldir').is_file(), f'missing QML module: {here / "qml" / "Launcher" / "qmldir"}')
     check(len(list((here / 'qml' / 'Launcher').glob('*.qml'))) > 5, 'QML files missing')
-    for font in ('Barlow-Regular.ttf', 'Barlow-Bold.ttf', 'BigShouldersStencilDisplay.ttf'):
+    for font in ('Unbounded.ttf', 'GolosText.ttf'):
         check((here / 'fonts' / font).is_file(), f'missing font: {font}')
     check((here.parent / 'infamous.png').is_file(), 'missing window icon: infamous.png')
     try:

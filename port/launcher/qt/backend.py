@@ -204,11 +204,9 @@ class Backend(QObject):
     def fontDisplay(self):
         return self.fonts[0]
 
-    @Property(str, notify=langChanged)
+    @Property(str, constant=True)
     def fontText(self):
-        # Barlow has no Cyrillic: Russian text in it mixed two fonts in every line (Latin in Barlow,
-        # the rest in the system's fallback), so Russian uses the system font for all of it.
-        return 'sans-serif' if self.t_.ru() else self.fonts[1]
+        return self.fonts[1]
 
     @Property(bool, constant=True)
     def reducedMotion(self):

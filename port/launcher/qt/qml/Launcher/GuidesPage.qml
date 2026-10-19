@@ -14,8 +14,8 @@ Item {
     Column {
         id: head
         x: page.side; y: 26; width: parent.width - 2 * page.side; spacing: 12
-        Text { text: Theme.tr("guides_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
-               font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.1 }
+        Text { text: Theme.tr("guides_title"); color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
+               font.weight: Font.ExtraBold; }
         Text { width: parent.width; text: Theme.tr("guides_intro"); wrapMode: Text.WordWrap; color: Theme.textSoft
                font.family: Theme.fontText; font.pixelSize: 14; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
         Row {
@@ -34,7 +34,7 @@ Item {
                     readonly property bool on: Backend.guideKind === modelData.key
                     height: 34; radius: 17; width: kindText.implicitWidth + 28
                     color: on ? Theme.navOn : Theme.chip; border.width: 1; border.color: on ? page.accent : Theme.chipLine
-                    Text { id: kindText; anchors.centerIn: parent; text: modelData.label; color: parent.on ? "#fff" : Theme.textChip
+                    Text { id: kindText; anchors.centerIn: parent; text: modelData.label; color: parent.on ? Theme.onNav : Theme.textChip
                            font.family: Theme.fontText; font.pixelSize: 13; font.weight: Font.DemiBold }
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Backend.setGuideKind(modelData.key) }
                 }
@@ -59,7 +59,7 @@ Item {
         id: frame
         x: page.side; y: head.y + head.height + 14
         width: parent.width - 2 * page.side; height: parent.height - y - 24
-        radius: 12; color: "#0b0c0f"; border.width: 1; border.color: Theme.cardLine
+        radius: 12; color: Theme.well; border.width: 1; border.color: Theme.cardLine
         clip: true
         Flickable {
             id: view

@@ -24,11 +24,11 @@ Rectangle {
                 x: 6; y: 2; spacing: 2
                 Text { text: Theme.tr("brand"); color: Theme.accents.library; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 }); font.pixelSize: 11
                        font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 3.2; bottomPadding: 4 }
-                Text { text: Backend.railTitle; color: "#ffffff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 34
-                       font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase
-                       font.letterSpacing: 1.7; lineHeight: 0.95 }
+                Text { text: Backend.railTitle; color: Theme.title; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 34
+                       width: root.width - 50; fontSizeMode: Text.HorizontalFit; minimumPixelSize: 18   // a wide title shrinks
+                       font.weight: Font.ExtraBold; lineHeight: 0.95 }
                 Text { text: Backend.railSubtitle; color: Theme.smoke; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 700 }); font.pixelSize: 15
-                       font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 4.8 }
+                       font.weight: Font.Bold; font.capitalization: Font.AllUppercase; font.letterSpacing: 1.5 }
             }
         }
         Repeater {
@@ -60,7 +60,7 @@ Rectangle {
                     width: (parent.width - 12) / 3; height: 34; radius: 8
                     color: on ? Theme.navOn : "transparent"
                     border.width: 1; border.color: on ? Theme.smoke : Theme.chipLine
-                    Text { anchors.centerIn: parent; text: modelData.label; color: parent.on ? "#fff" : Theme.textMuted
+                    Text { anchors.centerIn: parent; text: modelData.label; color: parent.on ? Theme.onNav : Theme.textMuted
                            font.family: Theme.fontText; font.pixelSize: 13; font.weight: Font.Bold }
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Backend.setLang(modelData.code) }
                 }
