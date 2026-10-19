@@ -752,5 +752,9 @@
   "off": "выкл.",
   "Add the folder of a game to start.": "Добавьте папку с игрой, чтобы начать.",
   "Same engine as Second Son. Leaderboards (Score Attack) are offline.": "Тот же движок, что у Second Son. Таблицы лидеров (Score Attack) не работают — офлайн.",
-  "Online battles, PSN dialogs and Share Play are offline.": "Онлайн-бои, окна PSN и Share Play не работают — офлайн."
+  "Online battles, PSN dialogs and Share Play are offline.": "Онлайн-бои, окна PSN и Share Play не работают — офлайн.",
+  "Credits": "Авторы",
+  "PS4 Native Ports by Laitsberg: more PS4 games on the native runtime (inFAMOUS First Light, J-STARS Victory VS+), the game library and this launcher.": "PS4 Native Ports — Laitsberg: новые игры PS4 на нативном рантайме (inFAMOUS First Light, J-STARS Victory VS+), библиотека игр и этот лаунчер.",
+  "Built on iss_pc, the native inFAMOUS Second Son port by HayatoG, and on tlg_pc, gr2_pc, gow3_pc, bloodborne_pc, shadPS4 and the other projects named in the README. Thank you.": "Основано на iss_pc — нативном порте inFAMOUS Second Son от HayatoG, а также на tlg_pc, gr2_pc, gow3_pc, bloodborne_pc, shadPS4 и других проектах, перечисленных в README. Спасибо им.",
+  "Fonts: Unbounded and Golos Text (SIL Open Font License). Open source under GPL-2.0.": "Шрифты: Unbounded и Golos Text (SIL Open Font License). Открытый код под GPL-2.0."
 }

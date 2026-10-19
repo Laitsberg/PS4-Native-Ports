@@ -144,7 +144,7 @@ Item {
             }
 
             Text {
-                text: (Backend.version ? Backend.version + " · " : "") + Theme.tr("footer_credit") + " · " + Theme.tr("footer_license")
+                text: (Backend.version ? Backend.version + " · " : "") + Theme.tr("footer_license")
                 color: Theme.textFaint; font.family: Theme.fontText; font.pixelSize: 12
             }
         }

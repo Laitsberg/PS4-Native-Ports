@@ -249,6 +249,15 @@ Item {
                 GhostButton { text: Theme.tr("sup_github"); onClicked: Support.openLink("github") }
                 GhostButton { text: Theme.tr("sup_open_logs"); onClicked: Support.openLogsFolder() }
             }
+
+            // ---- credits ------------------------------------------------------------------------------------
+            Item { width: 1; height: 6 }
+            SectionTitle { text: Theme.tr("credits_title") }
+            Repeater {
+                model: ["credits_project", "credits_upstream", "credits_fonts"]
+                Text { width: parent.width; text: Theme.tr(modelData); wrapMode: Text.WordWrap; color: Theme.textSoft
+                       font.family: Theme.fontText; font.pixelSize: 14; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
+            }
         }
     }
 
