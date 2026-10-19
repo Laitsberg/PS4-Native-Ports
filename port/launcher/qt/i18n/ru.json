@@ -732,5 +732,15 @@
   "GPU readbacks and memory": "Чтения с GPU и память",
   "Shaders and pipelines": "Шейдеры и конвейеры",
   "Image workarounds": "Обходы для изображений",
-  "Diagnostics (logs)": "Диагностика (логи)"
+  "Diagnostics (logs)": "Диагностика (логи)",
+  "Add to Steam": "Добавить в Steam",
+  "Close Steam and add": "Закрыть Steam и добавить",
+  "Puts every game of the library in your Steam library, each with its own shortcut, cover and play time. They start with the settings saved here.": "Добавляет каждую игру библиотеки в библиотеку Steam — у каждой свой ярлык, обложка и время в игре. Запускаются с настройками, сохранёнными здесь.",
+  "Steam was not found on this PC (or nobody has signed in to it yet).": "Steam не найден на этом ПК (или в него ещё никто не входил).",
+  "Steam has to close while the games are added; it opens again afterwards. Press “Close Steam and add”.": "Пока игры добавляются, Steam должен быть закрыт; потом он откроется снова. Нажмите «Закрыть Steam и добавить».",
+  "Adding to Steam…": "Добавляю в Steam…",
+  "Steam did not close. Close it yourself and try again.": "Steam не закрылся. Закройте его сами и попробуйте снова.",
+  "Could not add the games to Steam: {detail}": "Не удалось добавить игры в Steam: {detail}",
+  "In your Steam library: {games}.": "В библиотеке Steam: {games}.",
+  "No game folder of the library has eboot.bin: nothing was added to Steam.": "Ни в одной папке библиотеки нет eboot.bin: в Steam ничего не добавлено."
 }

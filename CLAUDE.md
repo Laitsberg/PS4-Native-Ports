@@ -62,7 +62,7 @@ Runtime exit code 25 = Windows refused the ~6 GB memory reservation (error 1450/
 
 ## Tests
 
-`cd port/tests && python3 -m unittest test_games test_userdata test_qt_support test_backports_table test_qt_russian`.
+`cd port/tests && python3 -m unittest test_games test_userdata test_qt_support test_backports_table test_qt_russian test_steam_shortcuts`.
 `test_qt_launcher` has two failures that also fail upstream (`TranslationTests`); ignore them.
 C runtime needs SDL3 headers to compile; CI is the real build check.
 

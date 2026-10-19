@@ -743,6 +743,9 @@ def launch(settings, seconds=0, extra_env=None):
 
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ['--game'] and len(argv) > 1:   # a Steam shortcut of one library game
+        os.environ['ISS_GAME_DIR'] = argv[1]       # inherited by the game: its in-game restart keeps it
+        argv = argv[2:]
     attach_stdio()
     seconds = int(argv[0]) if argv and argv[0].isdigit() else 0
     settings = load_settings()

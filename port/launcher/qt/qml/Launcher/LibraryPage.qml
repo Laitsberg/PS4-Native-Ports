@@ -118,6 +118,20 @@ Item {
                 }
             }
 
+            Row {   // Windows with Steam installed: one non-Steam shortcut per game
+                visible: Backend.steamAvailable
+                width: parent.width; spacing: 16
+                GhostButton {
+                    id: steamButton
+                    text: Theme.tr(Backend.steamMustClose ? "steam_add_close" : "steam_add")
+                    accent: page.accent
+                    onClicked: Backend.addToSteam(Backend.steamMustClose)
+                }
+                Text { width: parent.width - steamButton.width - 16; anchors.verticalCenter: parent.verticalCenter
+                       text: Theme.tr("steam_hint"); wrapMode: Text.WordWrap; color: Theme.textDim
+                       font.family: Theme.fontText; font.pixelSize: 13 }
+            }
+
             Text {   // folder accepted / rejected (same messages as the Play screen)
                 visible: Backend.notice !== ""
                 width: parent.width; wrapMode: Text.WordWrap; text: Backend.notice; color: Theme.textDim

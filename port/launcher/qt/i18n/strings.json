@@ -447,5 +447,15 @@
   "library_missing": {"en": "Folder not found", "pt": "Pasta não encontrada"},
   "library_untested": {"en": "Untested", "pt": "Não testado"},
   "brand": {"en": "PS4 Native Ports", "pt": "PS4 Native Ports"},
-  "err_virtual_memory": {"en": "The game could not start: Windows did not give it the ~6 GB of memory the console needs. Close heavy programs (browser, video editors) or enlarge the page file (System → Advanced → Performance → Virtual memory: 16384–32768 MB), then press Play again.", "pt": "O jogo não iniciou: o Windows não liberou os ~6 GB de memória que o console precisa. Feche programas pesados (navegador, editores de vídeo) ou aumente o arquivo de paginação (Sistema → Avançado → Desempenho → Memória virtual: 16384–32768 MB) e jogue de novo."}
+  "err_virtual_memory": {"en": "The game could not start: Windows did not give it the ~6 GB of memory the console needs. Close heavy programs (browser, video editors) or enlarge the page file (System → Advanced → Performance → Virtual memory: 16384–32768 MB), then press Play again.", "pt": "O jogo não iniciou: o Windows não liberou os ~6 GB de memória que o console precisa. Feche programas pesados (navegador, editores de vídeo) ou aumente o arquivo de paginação (Sistema → Avançado → Desempenho → Memória virtual: 16384–32768 MB) e jogue de novo."},
+  "steam_add": {"en": "Add to Steam", "pt": "Adicionar à Steam"},
+  "steam_add_close": {"en": "Close Steam and add", "pt": "Fechar a Steam e adicionar"},
+  "steam_hint": {"en": "Puts every game of the library in your Steam library, each with its own shortcut, cover and play time. They start with the settings saved here.", "pt": "Coloca cada jogo da biblioteca na sua biblioteca da Steam, cada um com atalho, capa e tempo de jogo próprios. Eles iniciam com as configurações salvas aqui."},
+  "steam_not_found": {"en": "Steam was not found on this PC (or nobody has signed in to it yet).", "pt": "A Steam não foi encontrada neste PC (ou ninguém entrou nela ainda)."},
+  "steam_must_close": {"en": "Steam has to close while the games are added; it opens again afterwards. Press “Close Steam and add”.", "pt": "A Steam precisa fechar enquanto os jogos são adicionados; ela abre de novo depois. Clique em “Fechar a Steam e adicionar”."},
+  "steam_adding": {"en": "Adding to Steam…", "pt": "Adicionando à Steam…"},
+  "steam_did_not_close": {"en": "Steam did not close. Close it yourself and try again.", "pt": "A Steam não fechou. Feche-a você mesmo e tente de novo."},
+  "steam_failed": {"en": "Could not add the games to Steam: {detail}", "pt": "Não foi possível adicionar os jogos à Steam: {detail}"},
+  "steam_added": {"en": "In your Steam library: {games}.", "pt": "Na sua biblioteca da Steam: {games}."},
+  "steam_nothing": {"en": "No game folder of the library has eboot.bin: nothing was added to Steam.", "pt": "Nenhuma pasta da biblioteca tem eboot.bin: nada foi adicionado à Steam."}
 }

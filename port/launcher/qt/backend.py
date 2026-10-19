@@ -17,6 +17,7 @@ import games  # noqa: E402
 import advanced_table  # noqa: E402
 import logtail  # noqa: E402
 import precompile  # noqa: E402
+import steam_shortcuts  # noqa: E402
 
 LOG_LINES = 500           # lines the log panel keeps
 LOG_POLL_MS = 1000        # how often the game's log file is read for the panel
@@ -405,6 +406,73 @@ class Backend(QObject):
             self.settings['game_dir'] = paths[0] if paths else ''
         tlg_run.save_settings(self.settings)
         self.refresh()
+
+    # -- Steam: one non-Steam shortcut per library game (Windows) --------------------------------
+    @Property(bool, constant=True)
+    def steamAvailable(self):
+        return steam_shortcuts.steam_folder() is not None
+
+    @Property(bool, notify=stateChanged)
+    def steamMustClose(self):
+        return getattr(self, '_steam_must_close', False)
+
+    def _say(self, text):
+        self._message = text
+        self.stateChanged.emit()
+
+    @Slot(bool)
+    def addToSteam(self, close_steam):
+        """Steam keeps shortcuts.vdf open and rewrites it on exit, so it must be closed first: the
+        first click only asks (steamMustClose), the second closes and restarts it."""
+        steam = steam_shortcuts.steam_folder()
+        configs = steam_shortcuts.user_configs(steam) if steam else []
+        if not configs:
+            return self._say(self.t_('steam_not_found'))
+        self._steam_must_close = steam_shortcuts.steam_running() and not close_steam
+        if self._steam_must_close:
+            return self._say(self.t_('steam_must_close'))
+        self._say(self.t_('steam_adding'))
+        threading.Thread(target=self._add_to_steam, args=(steam, configs), daemon=True).start()
+
+    def _add_to_steam(self, steam, configs):
+        import subprocess
+        import sys
+        import time
+        restart = steam_shortcuts.steam_running()
+        if restart:
+            subprocess.Popen([str(steam / 'steam.exe'), '-shutdown'], creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
+            for _ in range(60):
+                time.sleep(0.5)
+                if not steam_shortcuts.steam_running():
+                    break
+            else:
+                return self._say(self.t_('steam_did_not_close'))
+            time.sleep(1)   # Steam writes its files as it exits
+        if tlg_run.FROZEN:   # "Play <name>.exe" starts "<name>.exe --play" and waits, so Steam sees the game run
+            exe, play = Path(sys.executable).with_name('Play ' + Path(sys.executable).name), ''
+        else:
+            pythonw = Path(sys.executable).with_name('pythonw.exe')
+            exe = pythonw if pythonw.exists() else Path(sys.executable)
+            play = f'"{Path(__file__).resolve().parent.parent / "infamous_launcher_qt.py"}" --play '
+        added = []
+        try:
+            for path in self._library_paths():
+                if not Path(path, 'eboot.bin').is_file():
+                    continue
+                about = games.info(path)
+                name = about['title']
+                if name in added:   # Steam's appid is exe + name: two dumps of one game need two names
+                    name = f"{name} ({about['title_id'] or Path(path).name})"
+                for config in configs:
+                    appid = steam_shortcuts.add_shortcut(config / 'shortcuts.vdf', name, str(exe), str(exe.parent),
+                                                         about['cover'] or str(exe), f'{play}--game "{path}"')
+                    steam_shortcuts.add_artwork(config, appid, about['art'], about['cover'])
+                added.append(name)
+        except (OSError, ValueError) as error:
+            return self._say(self.t_('steam_failed', detail=str(error)))
+        if restart:
+            os.startfile('steam://open/games')
+        self._say(self.t_('steam_added', games=', '.join(added)) if added else self.t_('steam_nothing'))
 
     @Property(str, notify=stateChanged)
     def playSubtitle(self):
