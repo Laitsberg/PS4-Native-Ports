@@ -145,7 +145,7 @@ DEFAULT_SETTINGS = {
     # Source tree: the merged game view (base 1.00 + update 1.07). Package: the player picks it.
     'game_dir': '' if FROZEN else str(REPO_DIR / 'game' / 'CUSA00223'),
     'game_language': 'auto',       # auto (system language) | a key of GAME_LANGUAGES
-    'ui_language': 'auto',         # auto | pt_BR | en_US
+    'ui_language': 'auto',         # auto | pt_BR | en_US | ru_RU (Qt launcher only; the in-game menu shows English)
     'show_fps': False,
     'display_mode': 'Windowed',    # Windowed | Borderless | Fullscreen (tlg.ini)
     'vsync': True,

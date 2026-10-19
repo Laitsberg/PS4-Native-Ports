@@ -22,7 +22,7 @@ import userdata  # noqa: E402
 import shader_cache  # noqa: E402
 
 # ---------------------------------------------------------------------------------------- i18n
-LANGS = ('pt_BR', 'en_US')
+LANGS = ('pt_BR', 'en_US', 'ru_RU')
 # Names of the game languages (same as GAME_LANGUAGE_NAMES of the Tk launcher, which needs tkinter to import).
 GAME_LANGUAGE_NAMES = {'en': 'English', 'pt_BR': 'Português (Brasil)', 'es_LA': 'Español (Latinoamérica)',
                        'fr_CA': 'Français (Canada)', 'tr': 'Türkçe', 'ru': 'Русский'}
@@ -43,40 +43,69 @@ def tk_text():
         return {**preset_share.TEXT, **tlg_run.TEXT}
 
 
-def system_is_portuguese():
+def system_locale():
     for name in ('LC_ALL', 'LC_MESSAGES', 'LANG'):
         value = os.environ.get(name)
         if value:
-            return value.lower().startswith('pt')
+            return value.lower()
     try:
-        return (locale.getlocale()[0] or '').lower().startswith('pt')
+        return (locale.getlocale()[0] or '').lower()
     except ValueError:
-        return False
+        return ''
+
+
+def system_is_portuguese():
+    return system_locale().startswith('pt')
+
+
+def system_is_russian():
+    return system_locale().startswith(('ru', 'russian'))   # ru_RU.UTF-8, Windows' Russian_Russia
+
+
+def ui_language(settings):
+    """One of LANGS: the player's choice, else the system's language, else English."""
+    choice = settings.get('ui_language', 'auto')
+    if choice == 'auto':
+        return 'pt_BR' if system_is_portuguese() else 'ru_RU' if system_is_russian() else 'en_US'
+    return choice if choice in LANGS else 'en_US'
 
 
 def is_portuguese(settings):
-    choice = settings.get('ui_language', 'auto')
-    return system_is_portuguese() if choice == 'auto' else choice == 'pt_BR'
+    return ui_language(settings) == 'pt_BR'
 
 
 class Translator:
-    """t(key): Qt strings first (i18n/strings.json), then the Tk launcher's TEXT table."""
+    """t(key): Qt strings first (i18n/strings.json), then the Tk launcher's TEXT table.
+    Russian is looked up by the English text in i18n/ru.json, for every (en, pt) pair the
+    launcher shows; a text it does not have stays in English."""
 
-    def __init__(self, settings, strings=None, tk=None):
+    def __init__(self, settings, strings=None, tk=None, ru=None):
         self.settings = settings
         self.strings = load_strings() if strings is None else strings
         self.tk = tk_text() if tk is None else tk
+        self.ru_text = load_strings(HERE / 'i18n' / 'ru.json') if ru is None else ru
+
+    def lang(self):
+        return ui_language(self.settings)
 
     def pt(self):
-        return is_portuguese(self.settings)
+        return self.lang() == 'pt_BR'
+
+    def ru(self):
+        return self.lang() == 'ru_RU'
+
+    def pick(self, en, pt):
+        """The text of an (en, pt) pair in the interface language."""
+        if self.pt():
+            return pt
+        return self.ru_text.get(en, en) if self.ru() else en
 
     def __call__(self, key, **fmt):
         if key in self.strings:
             entry = self.strings[key]
-            text = entry['pt'] if self.pt() else entry['en']
+            text = self.pick(entry['en'], entry['pt'])
         elif key in self.tk:
-            en, pt = self.tk[key]
-            text = pt if self.pt() else en
+            text = self.pick(*self.tk[key])
         else:
             return key
         try:
@@ -86,7 +115,10 @@ class Translator:
 
     def pair(self, pair):
         """An (en, pt) tuple from backports_table."""
-        return pair[1] if self.pt() else pair[0]
+        return self.pick(*pair)
+
+    def date_format(self):
+        return {'pt_BR': '%d/%m/%Y %H:%M', 'ru_RU': '%d.%m.%Y %H:%M'}.get(self.lang(), '%Y-%m-%d %H:%M')
 
 
 # ------------------------------------------------------------------------------------ fix groups
@@ -288,9 +320,9 @@ def _plain(text):
     return text.strip()
 
 
-def parse_news(readme_text, portuguese, count=3):
+def parse_news(readme_text, portuguese, count=3, russian=False):
     """The first `count` bullets of README's "Novidades" / "Что нового" / "What's new", cut to their bold lead."""
-    headings = ('## Novidades', '## Что нового') if portuguese else ("## What's new",)
+    headings = ('## Что нового',) if russian else ('## Novidades', '## Что нового') if portuguese else ("## What's new",)
     lines, inside = [], False
     for line in readme_text.splitlines():
         if line.startswith('## '):
@@ -313,7 +345,7 @@ def parse_news(readme_text, portuguese, count=3):
 def news(t, portuguese, readme=None):
     readme = readme or tlg_run.REPO_DIR / 'README.md'
     try:
-        found = parse_news(Path(readme).read_text(encoding='utf-8'), portuguese)
+        found = parse_news(Path(readme).read_text(encoding='utf-8'), portuguese, russian=t.ru())
     except OSError:
         found = []
     return found or [t(key) for key in FALLBACK_NEWS]

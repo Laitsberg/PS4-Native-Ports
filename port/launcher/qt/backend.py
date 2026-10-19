@@ -76,7 +76,7 @@ class FixesModel(QAbstractListModel):
             items = [i for i in backports_table.ADVANCED if i.tab == area and self._matches(i, words, t)]
             if not items:
                 continue
-            rows.append({'kind': 'header', 'id': 'hdr-' + area, 'title': title_pt if t.pt() else title_en, 'note': ''})
+            rows.append({'kind': 'header', 'id': 'hdr-' + area, 'title': t.pick(title_en, title_pt), 'note': ''})
             rows += [self.item_row(i, states) for i in items]
         self.beginResetModel()
         self.rows = rows
@@ -121,7 +121,7 @@ class FixesModel(QAbstractListModel):
             if item.vtype == 'bool':  # automatic: the GPU code decides
                 options = [('auto', t('exp_auto')), ('1', t('exp_on')), ('0', t('exp_off'))]
             else:
-                options = [(v, (pt if t.pt() else en)) for v, en, pt in item.choices]
+                options = [(v, t.pick(en, pt)) for v, en, pt in item.choices]
             row['control'] = 'combo'
             row['options'] = [{'value': v, 'label': label} for v, label in options]
             row['index'] = next((n for n, (v, _) in enumerate(options) if v == row['value']), 0)
@@ -203,9 +203,11 @@ class Backend(QObject):
     def fontDisplay(self):
         return self.fonts[0]
 
-    @Property(str, constant=True)
+    @Property(str, notify=langChanged)
     def fontText(self):
-        return self.fonts[1]
+        # Barlow has no Cyrillic: Russian text in it mixed two fonts in every line (Latin in Barlow,
+        # the rest in the system's fallback), so Russian uses the system font for all of it.
+        return 'sans-serif' if self.t_.ru() else self.fonts[1]
 
     @Property(bool, constant=True)
     def reducedMotion(self):
@@ -310,7 +312,7 @@ class Backend(QObject):
 
     @Property(str, notify=langChanged)
     def lang(self):
-        return 'pt_BR' if self.t_.pt() else 'en_US'
+        return self.t_.lang()
 
     @Slot(str)
     def setLang(self, lang):

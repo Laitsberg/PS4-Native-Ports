@@ -51,7 +51,10 @@ Unknown games get an "untested" profile from `param.sfo` and may still be launch
 ## Launcher (`port/launcher/`)
 
 Qt Quick (PySide6) in `qt/` (QML in `qt/qml/Launcher/`, strings in `qt/i18n/strings.json` — pt/en only,
-append keys at the end, keep the file's formatting). `games.py` = profiles and detection;
+append keys at the end, keep the file's formatting). Russian (`ru_RU`) is `qt/i18n/ru.json`: English text →
+Russian, used for every (en, pt) pair the Qt launcher shows (strings.json, Tk texts, fix tables); a text
+without a line there stays English, so a new key needs a line in ru.json too (`test_qt_russian` lists the
+missing ones). The in-game Insert menu and the Tk launcher stay pt/en. `games.py` = profiles and detection;
 `userdata.py` = data folder (`Documents/PS4-Native-Ports`, pointer `%APPDATA%/PS4-Native-Ports/launcher.json`);
 settings `%APPDATA%/ps4-native-ports/settings.json` — deliberately separate from the upstream Second Son
 launcher. Update check and problem reports point to `Laitsberg/PS4-Native-Ports` (`qt/releases.py`, `qt/report.py`).
@@ -59,7 +62,7 @@ Runtime exit code 25 = Windows refused the ~6 GB memory reservation (error 1450/
 
 ## Tests
 
-`cd port/tests && python3 -m unittest test_games test_userdata test_qt_support test_backports_table`.
+`cd port/tests && python3 -m unittest test_games test_userdata test_qt_support test_backports_table test_qt_russian`.
 `test_qt_launcher` has two failures that also fail upstream (`TranslationTests`); ignore them.
 C runtime needs SDL3 headers to compile; CI is the real build check.
 
@@ -77,6 +80,5 @@ See `docs/SURVEY_PORTS_2026-10.md` (what other native PS4 ports have that we can
 
 - First Light: shader stutter (the xpps precompile is built from Second Son 1.07 tables; adapting it is the
   main lever), the two long load freezes.
-- Launcher UI has no Russian translation yet.
 - Upstream is a few commits ahead (`git fetch upstream && git merge upstream/main`, then test).
 - Ideas: The Order: 1886 (a separate native port already exists: mateussmeneses/theorder1886-port).

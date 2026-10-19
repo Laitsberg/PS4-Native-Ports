@@ -49,8 +49,7 @@ class Saves(QObject):
     def when(self, stamp):
         if not stamp:
             return '—'
-        fmt = '%d/%m/%Y %H:%M' if self.backend.t_.pt() else '%Y-%m-%d %H:%M'
-        return datetime.datetime.fromtimestamp(stamp).strftime(fmt)
+        return datetime.datetime.fromtimestamp(stamp).strftime(self.backend.t_.date_format())
 
     def count(self, n):
         return self.t('saves_n_one' if n == 1 else 'saves_n_many', n=n)

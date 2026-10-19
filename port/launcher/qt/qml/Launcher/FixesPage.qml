@@ -24,6 +24,8 @@ Item {
                 spacing: 16
                 Text { text: Theme.tr("fixes_title"); color: "#fff"; font.family: Theme.fontDisplay; font.variableAxes: ({ "wght": 800 }); font.pixelSize: 42
                        font.weight: Font.ExtraBold; font.capitalization: Font.AllUppercase; font.letterSpacing: 2.1
+                       width: Math.min(implicitWidth, list.width - prof.implicitWidth - 40)   // long translations shrink
+                       fontSizeMode: Text.HorizontalFit; minimumPixelSize: 24
                        anchors.verticalCenter: parent.verticalCenter }
                 Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
