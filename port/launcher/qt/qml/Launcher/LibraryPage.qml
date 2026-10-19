@@ -118,7 +118,7 @@ Item {
                         Accessible.role: Accessible.Button
                         Accessible.name: Theme.tr("library_add")
                     }
-                    Text { y: page.tileH + 10; width: parent.width; text: Theme.tr("library_add"); elide: Text.ElideRight
+                    Text { y: page.tileH + 10; width: parent.width; text: Theme.tr("library_add_short"); elide: Text.ElideRight
                            color: Theme.textSoft; font.family: Theme.fontText; font.pixelSize: 14; font.weight: Font.Bold }
                 }
             }

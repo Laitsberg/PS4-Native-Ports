@@ -39,6 +39,14 @@ Item {
                 GradientStop { position: 1; color: Theme.bg }
             }
         }
+        Rectangle {   // the title and kicker read over any art (the dump's own pic1 often has the game logo there)
+            anchors.left: parent.left; width: parent.width * 0.65; height: parent.height
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0; color: Qt.rgba(Theme.bg.r, Theme.bg.g, Theme.bg.b, 0.88) }
+                GradientStop { position: 1; color: Qt.rgba(Theme.bg.r, Theme.bg.g, Theme.bg.b, 0) }
+            }
+        }
         Rectangle {   // the data folder has no saves but another place does (typically after an update)
             visible: Saves.homeHint !== ""
             x: 36; y: 18; width: Math.min(parent.width - 72, 640); height: hintCol.implicitHeight + 24
@@ -119,28 +127,6 @@ Item {
                 width: parent.width
                 text: "☕  " + Theme.tr("support_project")
                 onClicked: Backend.openUrl("kofi")
-            }
-            Rectangle {   // game language (voice and text), on a card: readable over the hero image
-                width: parent.width; height: langCol.implicitHeight + 20; radius: 12; color: Theme.card
-                Column {   // next start; the interface language is separate
-                    id: langCol
-                    x: 12; y: 10; width: parent.width - 24; spacing: 4
-                    Row {
-                        spacing: 10
-                        Text { text: Theme.tr("game_language_label"); color: Theme.textMuted; font.family: Theme.fontText; font.pixelSize: 12; font.weight: Font.Bold
-                               width: 60; wrapMode: Text.WordWrap; anchors.verticalCenter: parent.verticalCenter }
-                        Select {
-                            accent: page.accent; width: langCol.width - 70
-                            model: Backend.gameLanguageOptions
-                            currentIndex: Backend.gameLanguageIndex
-                            onActivated: (i) => Backend.setGameLanguage(Backend.gameLanguageOptions[i].value)
-                        }
-                    }
-                    Text { visible: Backend.gameLanguageNow !== ""; width: parent.width; text: Backend.gameLanguageNow; color: page.accent
-                           font.family: Theme.fontText; font.pixelSize: 12; font.weight: Font.Bold }
-                    Text { width: parent.width; text: Theme.tr("game_language_hint"); wrapMode: Text.WordWrap; color: Theme.textSoft
-                           font.family: Theme.fontText; font.pixelSize: 12; lineHeight: 1.2; lineHeightMode: Text.ProportionalHeight }
-                }
             }
         }
     }
