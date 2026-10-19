@@ -24,8 +24,8 @@ LOG_POLL_MS = 1000        # how often the game's log file is read for the panel
 CLOSE_DELAY_MS = 2000     # 'Close the launcher when the game starts': wait after the start
 
 URLS = {'channel': 'https://www.youtube.com/@hayatog-dev', 'discord': 'https://discord.gg/UMkdMYZh9g',
-        'sponsor': 'https://github.com/sponsors/HayatoG',
-        'coffee': 'https://buymeacoffee.com/hayatog',
+        'kofi': 'https://ko-fi.com/laitsberg',          # this project
+        'coffee': 'https://buymeacoffee.com/hayatog',   # HayatoG, the original port's author (Credits)
         'apolar': 'https://github.com/sapoguruoficial-cmd'}
 
 

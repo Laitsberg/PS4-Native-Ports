@@ -115,11 +115,10 @@ Item {
                 text: Theme.tr("choose_folder")
                 onClicked: folderDialog.open()
             }
-            GhostButton {   // Optional support: opens the creator page in the system browser.
+            GhostButton {   // Optional support of this project (Ko-fi), in the system browser.
                 width: parent.width
-                // a plain button: white text on the coffee yellow did not read
-                text: "☕  " + Theme.tr("coffee_label")
-                onClicked: Backend.openUrl("coffee")
+                text: "☕  " + Theme.tr("support_project")
+                onClicked: Backend.openUrl("kofi")
             }
             Rectangle {   // game language (voice and text), on a card: readable over the hero image
                 width: parent.width; height: langCol.implicitHeight + 20; radius: 12; color: Theme.card

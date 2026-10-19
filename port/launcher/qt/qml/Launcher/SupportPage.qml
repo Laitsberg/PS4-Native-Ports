@@ -244,8 +244,7 @@ Item {
             SectionTitle { text: Theme.tr("sup_links_title") }
             Flow {
                 width: parent.width; spacing: 10
-                GhostButton { text: "☕  " + Theme.tr("coffee_label"); onClicked: Backend.openUrl("coffee") }
-                GhostButton { text: Theme.tr("sponsor_label"); onClicked: Backend.openUrl("sponsor") }
+                GhostButton { text: "☕  " + Theme.tr("support_project"); tone: "primary"; accent: Theme.smoke; onClicked: Backend.openUrl("kofi") }
                 GhostButton { text: Theme.tr("sup_discord"); onClicked: Support.openLink("discord") }
                 GhostButton { text: Theme.tr("sup_youtube"); onClicked: Support.openLink("youtube") }
                 GhostButton { text: Theme.tr("sup_github"); onClicked: Support.openLink("github") }
@@ -260,6 +259,7 @@ Item {
                 Text { width: parent.width; text: Theme.tr(modelData); wrapMode: Text.WordWrap; color: Theme.textSoft
                        font.family: Theme.fontText; font.pixelSize: 14; lineHeight: 1.35; lineHeightMode: Text.ProportionalHeight }
             }
+            GhostButton { text: "☕  " + Theme.tr("support_upstream"); onClicked: Backend.openUrl("coffee") }
         }
     }
 

@@ -525,5 +525,7 @@
   "credits_title": {"en": "Credits", "pt": "Créditos"},
   "credits_project": {"en": "PS4 Native Ports by Laitsberg: more PS4 games on the native runtime (inFAMOUS First Light, J-STARS Victory VS+), the game library and this launcher.", "pt": "PS4 Native Ports por Laitsberg: mais jogos de PS4 no runtime nativo (inFAMOUS First Light, J-STARS Victory VS+), a biblioteca de jogos e este launcher."},
   "credits_upstream": {"en": "Built on iss_pc, the native inFAMOUS Second Son port by HayatoG, and on tlg_pc, gr2_pc, gow3_pc, bloodborne_pc, shadPS4 and the other projects named in the README. Thank you.", "pt": "Feito sobre o iss_pc, o port nativo de inFAMOUS Second Son de HayatoG, e sobre tlg_pc, gr2_pc, gow3_pc, bloodborne_pc, shadPS4 e os outros projetos citados no README. Obrigado."},
-  "credits_fonts": {"en": "Fonts: Unbounded and Golos Text (SIL Open Font License). Open source under GPL-2.0.", "pt": "Fontes: Unbounded e Golos Text (SIL Open Font License). Código aberto sob a GPL-2.0."}
+  "credits_fonts": {"en": "Fonts: Unbounded and Golos Text (SIL Open Font License). Open source under GPL-2.0.", "pt": "Fontes: Unbounded e Golos Text (SIL Open Font License). Código aberto sob a GPL-2.0."},
+  "support_project": {"en": "Support the project", "pt": "Apoie o projeto"},
+  "support_upstream": {"en": "Support HayatoG, author of the original port", "pt": "Apoie o HayatoG, autor do port original"}
 }

@@ -813,5 +813,7 @@
   "A locally changed file conflicts with this update. {detail}": "Файл, изменённый у вас, конфликтует с этим обновлением. {detail}",
   "Recovery needs attention. Keep the update folder and its backup. {detail}": "Восстановление требует внимания. Сохраните папку обновления и её резервную копию. {detail}",
   "Binary updates cannot replace a source checkout.": "Бинарные обновления не могут заменить копию из исходного кода.",
-  "Drop shadPS4/GoldHEN cheat XML files in the mods folder, then turn them on here. The built-in boot intro skip is off by default. Nothing changes until you enable a mod.": "Положите XML-файлы читов shadPS4/GoldHEN в папку mods и включите их здесь. Встроенный пропуск вступительного ролика по умолчанию выключен. Пока вы ничего не включили, игра не меняется."
+  "Drop shadPS4/GoldHEN cheat XML files in the mods folder, then turn them on here. The built-in boot intro skip is off by default. Nothing changes until you enable a mod.": "Положите XML-файлы читов shadPS4/GoldHEN в папку mods и включите их здесь. Встроенный пропуск вступительного ролика по умолчанию выключен. Пока вы ничего не включили, игра не меняется.",
+  "Support the project": "Поддержать проект",
+  "Support HayatoG, author of the original port": "Поддержать HayatoG — автора оригинального порта"
 }

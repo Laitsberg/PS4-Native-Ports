@@ -147,6 +147,13 @@ Item {
                 text: (Backend.version ? Backend.version + " · " : "") + Theme.tr("footer_license")
                 color: Theme.textFaint; font.family: Theme.fontText; font.pixelSize: 12
             }
+            Text {
+                text: "☕  " + Theme.tr("support_project") + " →"; color: page.accent
+                font.family: Theme.fontText; font.pixelSize: 13; font.weight: Font.Bold
+                MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: Backend.openUrl("kofi") }
+                Accessible.role: Accessible.Link
+                Accessible.name: Theme.tr("support_project")
+            }
         }
     }
 
