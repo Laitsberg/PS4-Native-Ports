@@ -1,7 +1,6 @@
 module Launcher
 singleton Theme 1.0 Theme.qml
 Icon 1.0 Icon.qml
-NavButton 1.0 NavButton.qml
 Chip 1.0 Chip.qml
 GhostButton 1.0 GhostButton.qml
 Tag 1.0 Tag.qml
@@ -26,6 +25,6 @@ UpdatesPage 1.0 UpdatesPage.qml
 GuidesPage 1.0 GuidesPage.qml
 SlotCard 1.0 SlotCard.qml
 ConfirmCard 1.0 ConfirmCard.qml
-Rail 1.0 Rail.qml
+TopBar 1.0 TopBar.qml
 Window 1.0 Window.qml
 Main 1.0 Main.qml

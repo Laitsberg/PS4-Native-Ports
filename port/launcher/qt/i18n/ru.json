@@ -742,5 +742,15 @@
   "Steam did not close. Close it yourself and try again.": "Steam не закрылся. Закройте его сами и попробуйте снова.",
   "Could not add the games to Steam: {detail}": "Не удалось добавить игры в Steam: {detail}",
   "In your Steam library: {games}.": "В библиотеке Steam: {games}.",
-  "No game folder of the library has eboot.bin: nothing was added to Steam.": "Ни в одной папке библиотеки нет eboot.bin: в Steam ничего не добавлено."
+  "No game folder of the library has eboot.bin: nothing was added to Steam.": "Ни в одной папке библиотеки нет eboot.bin: в Steam ничего не добавлено.",
+  "More": "Ещё",
+  "Game and log": "Игра и лог",
+  "Title ID": "ID игры",
+  "Version": "Версия",
+  "Tested game": "Проверенная игра",
+  "Sensor mode": "Режим сенсора",
+  "off": "выкл.",
+  "Add the folder of a game to start.": "Добавьте папку с игрой, чтобы начать.",
+  "Same engine as Second Son. Leaderboards (Score Attack) are offline.": "Тот же движок, что у Second Son. Таблицы лидеров (Score Attack) не работают — офлайн.",
+  "Online battles, PSN dialogs and Share Play are offline.": "Онлайн-бои, окна PSN и Share Play не работают — офлайн."
 }

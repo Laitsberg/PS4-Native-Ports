@@ -7,19 +7,19 @@ Rectangle {
     color: Theme.bg
     implicitWidth: 1120
     implicitHeight: 700
-    property int current: Backend.gameDir !== "" ? 1 : 0
+    property int current: 0   // the library is the home screen: covers, the chosen game and Play
     readonly property var pages: ["library", "play", "graphics", "controls", "fixes", "saves", "guides", "support", "updates", "advanced", "mods"]
     property bool animate: true
 
-    Rail {
-        id: rail
-        anchors.left: parent.left; anchors.top: parent.top; anchors.bottom: parent.bottom
-        current: root.current
+    TopBar {
+        id: bar
+        anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top
+        current: root.current; pages: root.pages
         onPick: (i) => root.current = i
     }
     Item {
         id: stage
-        anchors.left: rail.right; anchors.right: parent.right; anchors.top: parent.top; anchors.bottom: parent.bottom
+        anchors.left: parent.left; anchors.right: parent.right; anchors.top: bar.bottom; anchors.bottom: parent.bottom
         clip: true
         Repeater {
             model: root.pages.length
@@ -44,7 +44,7 @@ Rectangle {
             }
         }
     }
-    Component { id: library; LibraryPage { onOpenPlay: root.current = root.pages.indexOf("play") } }
+    Component { id: library; LibraryPage { onOpenLog: root.current = root.pages.indexOf("play") } }
     Component { id: home; HomePage { animate: root.animate; onOpenFixes: root.current = root.pages.indexOf("fixes"); onOpenSaves: root.current = root.pages.indexOf("saves") } }
     Component { id: graphics; GraphicsPage { } }
     Component { id: controls

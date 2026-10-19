@@ -382,6 +382,7 @@ class Backend(QObject):
             about = games.info(path)
             about['current'] = path == current
             about['present'] = Path(path, 'eboot.bin').is_file()
+            about['note'] = self.t_.pick(about['note'], about['note'])   # en only; Russian via ru.json
             for k in ('cover', 'art'):
                 about[k] = QUrl.fromLocalFile(about[k]).toString() if about[k] else ''
             out.append(about)

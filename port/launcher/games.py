@@ -103,4 +103,5 @@ def info(game_dir):
             'title_id': str(values.get('TITLE_ID') or ''),
             'version': str(values.get('APP_VER') or values.get('VERSION') or '').lstrip('0') or '',
             'cover': image('icon0.png'), 'art': image('pic1.png', 'pic0.png'),
-            'known': profile in KNOWN, 'second_son': profile is SECOND_SON}
+            'known': profile in KNOWN, 'second_son': profile is SECOND_SON,
+            'motion': profile.motion_toggle, 'note': profile.note}

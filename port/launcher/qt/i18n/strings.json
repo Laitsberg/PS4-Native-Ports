@@ -457,5 +457,14 @@
   "steam_did_not_close": {"en": "Steam did not close. Close it yourself and try again.", "pt": "A Steam não fechou. Feche-a você mesmo e tente de novo."},
   "steam_failed": {"en": "Could not add the games to Steam: {detail}", "pt": "Não foi possível adicionar os jogos à Steam: {detail}"},
   "steam_added": {"en": "In your Steam library: {games}.", "pt": "Na sua biblioteca da Steam: {games}."},
-  "steam_nothing": {"en": "No game folder of the library has eboot.bin: nothing was added to Steam.", "pt": "Nenhuma pasta da biblioteca tem eboot.bin: nada foi adicionado à Steam."}
+  "steam_nothing": {"en": "No game folder of the library has eboot.bin: nothing was added to Steam.", "pt": "Nenhuma pasta da biblioteca tem eboot.bin: nada foi adicionado à Steam."},
+  "nav_more": {"en": "More", "pt": "Mais"},
+  "nav_game_log": {"en": "Game and log", "pt": "Jogo e log"},
+  "lib_fact_id": {"en": "Title ID", "pt": "ID do título"},
+  "lib_fact_version": {"en": "Version", "pt": "Versão"},
+  "lib_fact_tested": {"en": "Tested game", "pt": "Jogo testado"},
+  "lib_fact_sensor": {"en": "Sensor mode", "pt": "Modo sensor"},
+  "lib_sensor_off": {"en": "off", "pt": "desligado"},
+  "lib_empty": {"en": "Add the folder of a game to start.", "pt": "Adicione a pasta de um jogo para começar."},
+  "nav_saves_short": {"en": "Saves", "pt": "Saves"}
 }
