@@ -696,6 +696,11 @@ void VideoOutDriver::PresentThread(std::stop_token token) {
     // tlg: with a frame limit (uncapped presets) a queued flip is presented as soon as it
     // arrives and its slot allows, between vblanks, instead of on the next vblank tick.
     bool immediate_flips = frame_limit != 0;
+    // tlg: vblank paced (no frame limit): a flip that missed its tick is shown as soon as it
+    // arrives instead of on the next tick, still at most one flip per tick period, so the game
+    // never runs faster. Before, a 51 ms frame was shown after 67 ms: frame times came in whole
+    // ticks (67/83/100 ms) and the game waited for each flip. TLG_LATE_FLIPS=0 turns it off.
+    const bool late_flips = EmulatorSettingsImpl::Flag("TLG_LATE_FLIPS", true);
 
     while (!token.stop_requested()) {
         if (const u32 limit = current_limit(); limit != frame_limit) {
@@ -718,6 +723,7 @@ void VideoOutDriver::PresentThread(std::stop_token token) {
         auto& vblank_status = main_port.vblank_status;
         const auto now = std::chrono::steady_clock::now();
         const bool flip_slot = !frame_limit || now >= next_flip;
+        bool flipped = false;
         if (flip_slot && vblank_status.count % (main_port.flip_rate + 1) == 0) {
             const auto request = receive_request();
             if (request && frame_limit) {
@@ -734,6 +740,7 @@ void VideoOutDriver::PresentThread(std::stop_token token) {
             } else {
                 Flip(request);
                 FRAME_END;
+                flipped = true;
             }
         }
 
@@ -762,6 +769,17 @@ void VideoOutDriver::PresentThread(std::stop_token token) {
             main_port.vblank_cv.notify_all();
         }
 
+        if (late_flips && !frame_limit && !flipped && main_port.flip_rate == 0) {
+            {
+                std::unique_lock lk{mutex};
+                request_cv.wait_until(lk, tick_deadline, [&] { return !requests.empty(); });
+            }
+            if (const auto request = receive_request()) {
+                Flip(request);
+                FRAME_END;
+            }
+            // The timer below sleeps the rest of the tick.
+        }
         if (!immediate_flips || main_port.flip_rate != 0) {
             timer.End();
             continue;
