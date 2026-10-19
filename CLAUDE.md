@@ -9,6 +9,11 @@ Russian: answer in Russian; code, comments and commit messages in English.
 - `origin` = `Laitsberg/PS4-Native-Ports`, working branch **`first-light`** (the default branch). `main`
   mirrors upstream; `upstream` = `HayatoG/iss_pc`. Merge upstream into `first-light` only after checking
   it does not break First Light / J-STARS.
+- Merging upstream (last: `fb7e452`, 2026-10-19): keep **our** `.github/workflows/build.yml` (upstream
+  releases by hand from `main`; we release on every push to `first-light`), our README / README-player and
+  our launcher design (port their functional changes into it). After a merge check
+  `qt/updater.py` `ASSET_NAMES` (our `ps4-native-ports-*` package names) and give new strings a line in
+  `ru.json`. Never `git stash` in the middle of a merge: it drops the merge state.
 - Every push to `first-light` runs `.github/workflows/build.yml` (Linux + Windows packages, launcher
   `--selftest`, then a release `vYYYY.MM.DD-<sha>` marked Latest). A new push cancels the running build,
   so batch commits. ~30–40 min per build.
@@ -80,5 +85,4 @@ See `docs/SURVEY_PORTS_2026-10.md` (what other native PS4 ports have that we can
 
 - First Light: shader stutter (the xpps precompile is built from Second Son 1.07 tables; adapting it is the
   main lever), the two long load freezes.
-- Upstream is a few commits ahead (`git fetch upstream && git merge upstream/main`, then test).
 - Ideas: The Order: 1886 (a separate native port already exists: mateussmeneses/theorder1886-port).
