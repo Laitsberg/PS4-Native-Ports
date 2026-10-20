@@ -1059,9 +1059,11 @@ bool BufferCache::TryEagerRead(VAddr addr, u64 size) {
 }
 
 bool BufferCache::DeferredReadbackEnabled() {
+    // tlg: relaxed readbacks too: their downloads (guest writes over GPU-written pages) blocked
+    // the GPU command thread on the GPU, ~75 a second at ~7 ms in First Light (GPU ticks 50%).
     static const bool enabled = [] {
         const char* e = std::getenv("TLG_DEFERRED_READBACK");
-        return e && *e == '1' && EmulatorSettings.GetReadbacksMode() == GpuReadbacksMode::Precise;
+        return e && *e == '1' && EmulatorSettings.GetReadbacksMode() != GpuReadbacksMode::Disabled;
     }();
     return enabled;
 }
