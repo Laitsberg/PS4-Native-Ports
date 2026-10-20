@@ -170,6 +170,9 @@ _ROWS = (
       'validation. Off by default; restart the game after changing it.',
       'Contorno experimental testado por dois usuários de RX 580 em um build anterior. Esta versão ainda precisa '
       'de validação. Desligado por padrão; reinicie o jogo após mudar.'), {'risky': True}),
+    ('diag', 'FAULT_PROFILE', 'bool', '0', ('Log which game code waits on the GPU', 'Registrar qual código do jogo espera a GPU'),
+     ('Every 5 s: the game instructions and memory blocks whose reads and writes waited on GPU results the longest. Costs a little FPS.',
+      'A cada 5 s: as instruções do jogo e os blocos de memória cujas leituras e escritas mais esperaram resultados da GPU. Custa um pouco de FPS.'), {}),
     ('diag', 'PERF_DIAG', 'bool', '0', ('Image creation report', 'Relatório de criação de imagens'),
      ('Every 5 s the log lists the images created most often and the partial-height views used, to see whether a game remakes the same image every frame.',
       'A cada 5 s o log lista as imagens criadas com mais frequência e as vistas de altura parcial usadas, para ver se o jogo refaz a mesma imagem a cada quadro.'), {}),

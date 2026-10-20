@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <boost/container/small_vector.hpp>
 #include "tlg_toggles.h"
+#include "tlg_freeze.h"
 #include "common/assert.h"
 #include "common/debug.h"
 #include "common/div_ceil.h"
@@ -87,21 +88,35 @@ struct PageManager::Impl {
     virtual void Protect(VAddr address, size_t size, Core::MemoryPermission perms) = 0;
 
     // tlg: TLG_FAULT_PROFILE=1 prints, every 5 s, the guest instructions whose faults on GPU
-    // tracked pages cost the most time (which game code waits on the GPU, and for what).
+    // tracked pages cost the most time (which game code waits on the GPU, and for what), and the
+    // 64 KiB blocks of memory those faults hit. Code addresses inside the game image are printed
+    // as guest offsets (tlggpu_set_guest_image).
     struct FaultSite { u64 count = 0, ns = 0; VAddr last = 0; u64 caller = 0; bool write = false; };
+    struct FaultBlock { u64 reads = 0, writes = 0, ns = 0; };
+    static u64 GuestOffset(u64 address) {
+        const u64 base = TlgFreeze::image_base.load(std::memory_order_relaxed);
+        return base && address - base < TlgFreeze::image_size.load(std::memory_order_relaxed)
+                   ? address - base
+                   : address;
+    }
     static void ProfileFault(void* context, VAddr addr, bool write, u64 ns) {
-#ifdef __linux__
         static const bool enabled = [] { const char* e = std::getenv("TLG_FAULT_PROFILE"); return e && *e == '1'; }();
         if (!enabled) {
             return;
         }
         static std::mutex mutex;
         static std::unordered_map<u64, FaultSite> sites;
+        static std::unordered_map<u64, FaultBlock> blocks;
         static auto window = std::chrono::steady_clock::now();
-        const auto* uc = static_cast<ucontext_t*>(context);
-        const u64 rip = static_cast<u64>(uc->uc_mcontext.gregs[REG_RIP]);
-        // The return address at the top of the stack (right for leaf routines such as memcpy).
-        const u64 caller = *reinterpret_cast<const u64*>(uc->uc_mcontext.gregs[REG_RSP]);
+        const u64 rip = reinterpret_cast<u64>(Common::GetRip(context));
+#ifdef _WIN32
+        const u64 rsp = static_cast<EXCEPTION_POINTERS*>(context)->ContextRecord->Rsp;
+#else
+        const u64 rsp = static_cast<u64>(static_cast<ucontext_t*>(context)->uc_mcontext.gregs[REG_RSP]);
+#endif
+        // The return address at the top of the stack (right for leaf routines such as memcpy);
+        // the handler runs on the faulting thread, so its stack is readable.
+        const u64 caller = *reinterpret_cast<const u64*>(rsp);
         std::scoped_lock lock{mutex};
         auto& site = sites[rip];
         ++site.count;
@@ -109,6 +124,9 @@ struct PageManager::Impl {
         site.last = addr;
         site.write = write;
         site.caller = caller;
+        auto& block = blocks[addr >> 16];
+        ++(write ? block.writes : block.reads);
+        block.ns += ns;
         const auto now = std::chrono::steady_clock::now();
         if (now - window < std::chrono::seconds(5)) {
             return;
@@ -118,20 +136,25 @@ struct PageManager::Impl {
         std::sort(top.begin(), top.end(), [](const auto& a, const auto& b) { return a.second.ns > b.second.ns; });
         std::printf("Fault profile (5 s):");
         for (size_t i = 0; i < top.size() && i < 8; ++i) {
-            const u64 at = top[i].first;
-            const u64 from = top[i].second.caller;
             std::printf(" [%s %#llx<-%#llx x%llu %.1f ms @%#llx]", top[i].second.write ? "W" : "R",
-                        static_cast<unsigned long long>(at >= 0x800000000ull && at < 0x810000000ull ? at - 0x800000000ull : at),
-                        static_cast<unsigned long long>(from >= 0x800000000ull && from < 0x810000000ull ? from - 0x800000000ull : from),
+                        static_cast<unsigned long long>(GuestOffset(top[i].first)),
+                        static_cast<unsigned long long>(GuestOffset(top[i].second.caller)),
                         static_cast<unsigned long long>(top[i].second.count), top[i].second.ns / 1e6,
                         static_cast<unsigned long long>(top[i].second.last));
         }
         std::printf("\n");
+        std::vector<std::pair<u64, FaultBlock>> hot(blocks.begin(), blocks.end());
+        std::sort(hot.begin(), hot.end(), [](const auto& a, const auto& b) { return a.second.ns > b.second.ns; });
+        std::printf("Fault blocks (5 s, 64 KiB):");
+        for (size_t i = 0; i < hot.size() && i < 8; ++i) {
+            std::printf(" [%#llx R%llu W%llu %.1f ms]", static_cast<unsigned long long>(hot[i].first << 16),
+                        static_cast<unsigned long long>(hot[i].second.reads),
+                        static_cast<unsigned long long>(hot[i].second.writes), hot[i].second.ns / 1e6);
+        }
+        std::printf(" (%zu blocks)\n", hot.size());
         std::fflush(stdout);
         sites.clear();
-#else
-        (void)context; (void)addr; (void)write; (void)ns;
-#endif
+        blocks.clear();
     }
 
     static bool GuestFaultSignalHandler(void* context, void* fault_address) {

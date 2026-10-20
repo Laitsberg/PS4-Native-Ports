@@ -813,5 +813,7 @@
   "Binary updates cannot replace a source checkout.": "Бинарное обновление не может заменить копию из исходного кода.",
   "Drop shadPS4/GoldHEN cheat XML files in the mods folder, then turn them on here. The built-in boot intro skip is off by default. Nothing changes until you enable a mod.": "Положите XML-файлы читов shadPS4/GoldHEN в папку модов и включите их здесь. Встроенный пропуск вступительного ролика по умолчанию выключен. Пока вы не включите мод, ничего не меняется.",
   "Game threads finish their own readbacks": "Потоки игры сами завершают чтения GPU",
-  "With deferred readbacks: a game thread that reads GPU results finishes the pending copy itself instead of a round trip through the GPU thread.": "При отложенных чтениях: поток игры, которому нужны результаты GPU, сам завершает ожидающее копирование, без обращения через поток видеокарты."
+  "With deferred readbacks: a game thread that reads GPU results finishes the pending copy itself instead of a round trip through the GPU thread.": "При отложенных чтениях: поток игры, которому нужны результаты GPU, сам завершает ожидающее копирование, без обращения через поток видеокарты.",
+  "Log which game code waits on the GPU": "Записывать, какой код игры ждёт GPU",
+  "Every 5 s: the game instructions and memory blocks whose reads and writes waited on GPU results the longest. Costs a little FPS.": "Каждые 5 с: инструкции игры и блоки памяти, чьи чтения и записи дольше всего ждали результатов GPU. Немного снижает FPS."
 }
