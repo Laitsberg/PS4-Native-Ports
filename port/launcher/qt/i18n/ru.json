@@ -811,5 +811,7 @@
   "A locally changed file conflicts with this update. {detail}": "Изменённый локально файл конфликтует с этим обновлением. {detail}",
   "Recovery needs attention. Keep the update folder and its backup. {detail}": "Восстановление требует внимания. Сохраните папку обновления и её резервную копию. {detail}",
   "Binary updates cannot replace a source checkout.": "Бинарное обновление не может заменить копию из исходного кода.",
-  "Drop shadPS4/GoldHEN cheat XML files in the mods folder, then turn them on here. The built-in boot intro skip is off by default. Nothing changes until you enable a mod.": "Положите XML-файлы читов shadPS4/GoldHEN в папку модов и включите их здесь. Встроенный пропуск вступительного ролика по умолчанию выключен. Пока вы не включите мод, ничего не меняется."
+  "Drop shadPS4/GoldHEN cheat XML files in the mods folder, then turn them on here. The built-in boot intro skip is off by default. Nothing changes until you enable a mod.": "Положите XML-файлы читов shadPS4/GoldHEN в папку модов и включите их здесь. Встроенный пропуск вступительного ролика по умолчанию выключен. Пока вы не включите мод, ничего не меняется.",
+  "Game threads finish their own readbacks": "Потоки игры сами завершают чтения GPU",
+  "With deferred readbacks: a game thread that reads GPU results finishes the pending copy itself instead of a round trip through the GPU thread.": "При отложенных чтениях: поток игры, которому нужны результаты GPU, сам завершает ожидающее копирование, без обращения через поток видеокарты."
 }
