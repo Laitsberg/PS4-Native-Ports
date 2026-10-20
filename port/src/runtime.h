@@ -196,6 +196,10 @@ typedef struct FreezeMonitor {
 int runtime_freeze_step(FreezeMonitor *m, uint64_t frames, uint64_t now_ms);
 /* Guest image range (guest offsets in the report) and the monitor thread (seconds 0: none). */
 void runtime_freeze_start(uintptr_t image, uint64_t image_size, unsigned seconds);
+/* CPU time by thread: the busiest threads every `seconds` (0 = only at exit), the whole session
+ * from runtime_report. */
+void runtime_cpu_report_start(unsigned seconds);
+void runtime_cpu_report_session(void);
 /* Writes a report now (every thread: name, wait, RIP and frame chain) to out. */
 void runtime_freeze_report(FILE *out, const char *head);
 #endif

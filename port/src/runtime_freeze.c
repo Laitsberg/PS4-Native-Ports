@@ -16,6 +16,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <errno.h>
+#include <sched.h>
 #include <time.h>
 #ifdef _WIN32
 #include <windows.h>
@@ -425,4 +426,155 @@ void runtime_freeze_start(uintptr_t image, uint64_t image_size, unsigned seconds
     if (pthread_create(&thread, NULL, monitor, &state)) { puts("Freeze report: monitor thread not started"); return; }
     pthread_detach(thread);
     printf("Freeze report: after %u s without a new frame (TLG_FREEZE_REPORT_SECONDS, 0 = off)\n", seconds);
+}
+
+/* ---- CPU time by thread (after FelipePrado0's gow3_pc #813) ----
+ * Which threads keep the CPU busy, and how much of that is kernel time (write faults, page
+ * protection): every TLG_CPU_REPORT_SECONDS (default 30, 0 = off) the busiest threads of that
+ * period, and the whole session from runtime_report at exit. Threads that exited are not listed. */
+typedef struct {
+    uint64_t tid;
+    double user_ms, kernel_ms;
+    char name[64];
+} ThreadCpu;
+
+static int thread_times(uint64_t tid, double *user_ms, double *kernel_ms) {
+#ifdef _WIN32
+    HANDLE thread = OpenThread(THREAD_QUERY_LIMITED_INFORMATION, FALSE, (DWORD)tid);
+    if (!thread) return 0;
+    FILETIME created, exited, kernel, user;
+    const BOOL ok = GetThreadTimes(thread, &created, &exited, &kernel, &user);
+    CloseHandle(thread);
+    if (!ok) return 0;
+    *user_ms = (double)(((uint64_t)user.dwHighDateTime << 32) | user.dwLowDateTime) / 1e4;
+    *kernel_ms = (double)(((uint64_t)kernel.dwHighDateTime << 32) | kernel.dwLowDateTime) / 1e4;
+    return 1;
+#else
+    char path[64], line[1024];
+    snprintf(path, sizeof(path), "/proc/self/task/%llu/stat", (unsigned long long)tid);
+    int fd = open(path, O_RDONLY);
+    if (fd < 0) return 0;
+    ssize_t got = read(fd, line, sizeof(line) - 1);
+    close(fd);
+    if (got <= 0) return 0;
+    line[got] = 0;
+    const char *comm_end = strrchr(line, ')');
+    unsigned long utime, stime;
+    /* After "(comm) ": the state, fields 4-13, then utime and stime (proc(5)). */
+    if (!comm_end || sscanf(comm_end + 2, "%*c %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %lu %lu",
+                            &utime, &stime) != 2)
+        return 0;
+    const double tick_ms = 1000.0 / (double)sysconf(_SC_CLK_TCK);
+    *user_ms = (double)utime * tick_ms;
+    *kernel_ms = (double)stime * tick_ms;
+    return 1;
+#endif
+}
+static unsigned hardware_threads(void) {
+#ifdef _WIN32
+    DWORD_PTR process = 0, system = 0;
+    if (GetProcessAffinityMask(GetCurrentProcess(), &process, &system) && process)
+        return (unsigned)__builtin_popcountll((unsigned long long)process);
+    return 0;
+#else
+    cpu_set_t set;
+    CPU_ZERO(&set);
+    return sched_getaffinity(0, sizeof(set), &set) ? 0 : (unsigned)CPU_COUNT(&set);
+#endif
+}
+/* Every live thread with its CPU time; guest threads by their guest name (Windows has no host
+ * name for them, Linux cuts it at 15 characters). Callers hold cpu_lock (static buffers). */
+static pthread_mutex_t cpu_lock = PTHREAD_MUTEX_INITIALIZER;
+static size_t cpu_snapshot(ThreadCpu *out, size_t max) {
+    static Capture threads[MAX_THREADS];
+    static RuntimeThreadInfo guests[MAX_THREADS];
+    const size_t n = list_threads(threads, MAX_THREADS), g = runtime_thread_snapshot(guests, MAX_THREADS);
+    size_t count = 0;
+    for (size_t i = 0; i < n && count < max; ++i) {
+        ThreadCpu *t = &out[count];
+        if (!thread_times(threads[i].tid, &t->user_ms, &t->kernel_ms)) continue;
+        t->tid = threads[i].tid;
+        const char *name = threads[i].name;
+        for (size_t j = 0; j < g; ++j)
+            if (guests[j].os_tid == t->tid && !guests[j].finished && guests[j].name[0]) { name = guests[j].name; break; }
+        if (name[0]) snprintf(t->name, sizeof(t->name), "%s", name);
+        else snprintf(t->name, sizeof(t->name), "tid %llu", (unsigned long long)t->tid);
+        ++count;
+    }
+    return count;
+}
+static int busier(const void *a, const void *b) {
+    const ThreadCpu *x = a, *y = b;
+    const double u = x->user_ms + x->kernel_ms, v = y->user_ms + y->kernel_ms;
+    return (u < v) - (u > v);
+}
+/* The threads of `now` minus their time in `before` (absent there: all of it), busiest first. */
+static void cpu_print(const char *what, double seconds, const ThreadCpu *now, size_t n,
+                      const ThreadCpu *before, size_t m) {
+    static ThreadCpu delta[MAX_THREADS];
+    double total = 0;
+    for (size_t i = 0; i < n; ++i) {
+        delta[i] = now[i];
+        for (size_t j = 0; j < m; ++j) {
+            if (before[j].tid != now[i].tid) continue;
+            delta[i].user_ms = now[i].user_ms > before[j].user_ms ? now[i].user_ms - before[j].user_ms : 0;
+            delta[i].kernel_ms = now[i].kernel_ms > before[j].kernel_ms ? now[i].kernel_ms - before[j].kernel_ms : 0;
+            break;
+        }
+        total += delta[i].user_ms + delta[i].kernel_ms;
+    }
+    qsort(delta, n, sizeof(*delta), busier);
+    if (seconds <= 0) return;
+    const double percent = 100.0 / (seconds * 1000.0); /* ms -> % of one thread */
+    printf("CPU by thread, %s (%.0f s): %.0f%% of one thread in total, %u hardware threads, %zu threads\n",
+           what, seconds, total * percent, hardware_threads(), n);
+    for (size_t i = 0; i < n && i < 12; ++i) {
+        const double busy = (delta[i].user_ms + delta[i].kernel_ms) * percent;
+        if (busy < 1.0) break;
+        printf("  %-32s %5.1f%% of one thread (kernel %.1f%%)\n", delta[i].name, busy, delta[i].kernel_ms * percent);
+    }
+    fflush(stdout);
+}
+static uint64_t cpu_start_ms;
+static void *cpu_monitor(void *argument) {
+    const unsigned seconds = (unsigned)(uintptr_t)argument;
+#ifndef _WIN32
+    pthread_setname_np(pthread_self(), "tlg:cpu");
+#endif
+    static ThreadCpu a[MAX_THREADS], b[MAX_THREADS];
+    ThreadCpu *before = a, *now = b;
+    pthread_mutex_lock(&cpu_lock);
+    size_t m = cpu_snapshot(before, MAX_THREADS);
+    pthread_mutex_unlock(&cpu_lock);
+    uint64_t last_ms = runtime_wait_now_ms();
+    for (;;) {
+        sleep_ms(seconds * 1000u);
+        pthread_mutex_lock(&cpu_lock);
+        const size_t n = cpu_snapshot(now, MAX_THREADS);
+        const uint64_t ms = runtime_wait_now_ms();
+        char what[32];
+        snprintf(what, sizeof(what), "last %u s", seconds);
+        cpu_print(what, (double)(ms - last_ms) / 1000.0, now, n, before, m);
+        pthread_mutex_unlock(&cpu_lock);
+        ThreadCpu *swap = before; before = now; now = swap;
+        m = n;
+        last_ms = ms;
+    }
+    return NULL;
+}
+void runtime_cpu_report_start(unsigned seconds) {
+    cpu_start_ms = runtime_wait_now_ms();
+    if (!seconds) return;
+    pthread_t thread;
+    if (pthread_create(&thread, NULL, cpu_monitor, (void *)(uintptr_t)seconds)) return;
+    pthread_detach(thread);
+    printf("CPU report: busiest threads every %u s (TLG_CPU_REPORT_SECONDS, 0 = off)\n", seconds);
+}
+void runtime_cpu_report_session(void) {
+    if (!cpu_start_ms) return;
+    static ThreadCpu now[MAX_THREADS];
+    pthread_mutex_lock(&cpu_lock);
+    const size_t n = cpu_snapshot(now, MAX_THREADS);
+    cpu_print("whole session", (double)(runtime_wait_now_ms() - cpu_start_ms) / 1000.0, now, n, NULL, 0);
+    pthread_mutex_unlock(&cpu_lock);
 }

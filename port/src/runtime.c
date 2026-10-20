@@ -73,6 +73,7 @@ void runtime_report(void) {
            calls_init, calls_atexit, calls_cxa, handler_count);
     printf("Runtime: static guards acquired=%zu, released=%zu\n", (size_t)guards_acquired, (size_t)guards_released);
     runtime_thread_report();
+    runtime_cpu_report_session();
     runtime_mutex_report();
     runtime_rwlock_report();
     runtime_sema_report();

@@ -1351,6 +1351,11 @@ int main(int argc, char **argv) {
         unsigned seconds = freeze && *freeze ? (unsigned)strtoul(freeze, NULL, 10) : 10;
         runtime_freeze_start((uintptr_t)image, round_page(size) + stub_area + red_zone_area, gpu_enabled ? seconds : 0);
     }
+    {   /* TLG_CPU_REPORT_SECONDS (default 30, 0 = off): the busiest threads of each period, which
+         * show whether the GPU command thread, guest workers or kernel time hold the frame. */
+        const char *cpu = getenv("TLG_CPU_REPORT_SECONDS");
+        runtime_cpu_report_start(cpu && *cpu ? (unsigned)strtoul(cpu, NULL, 10) : 30);
+    }
     boot_step("entering the game");
     printf("Entering original x86-64 code at guest offset 0x%" PRIx64 "\n", entry);
 #ifdef _WIN32
