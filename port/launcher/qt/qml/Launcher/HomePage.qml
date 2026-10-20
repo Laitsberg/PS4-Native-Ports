@@ -115,10 +115,11 @@ Item {
                 text: Theme.tr("choose_folder")
                 onClicked: folderDialog.open()
             }
-            GhostButton {   // GitHub Sponsors page (an embedded iframe is not possible in Qt)
+            GhostButton {   // Optional support: opens the creator page in the system browser.
                 width: parent.width
-                text: "♥  " + Theme.tr("sponsor_label")
-                onClicked: Backend.openUrl("sponsor")
+                tone: "primary"; accent: "#FFDD00"
+                text: "☕  " + Theme.tr("coffee_label")
+                onClicked: Backend.openUrl("coffee")
             }
             Rectangle {   // game language (voice and text), on a card: readable over the hero image
                 width: parent.width; height: langCol.implicitHeight + 20; radius: 12; color: Theme.card
