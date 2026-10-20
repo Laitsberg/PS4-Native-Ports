@@ -136,6 +136,7 @@ DEFAULT_ENV = {
     'ISS_JITTER': '0',
     'ISS_OBJECT_MOTION': '0',
     'ISS_FRAME_STATS': '1',        # FPS in the log every 5 s (scripts/watch_session.sh heartbeat)
+    'ISS_READBACK_STATS': '1',     # GPU readbacks the game waited for, every 5 s (low FPS with an idle GPU)
 }
 
 # The game's own modules from sce_module/, linked into the image.
