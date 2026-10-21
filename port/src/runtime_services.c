@@ -39,6 +39,7 @@
 #define PLAYGO_BAD_CHUNK ((int32_t)0x80B2000C)
 #define AUDIO_IN_NOT_OPENED ((int32_t)0x80260109)
 #define TROPHY_INVALID ((int32_t)0x80551604)
+#define TROPHY_ICON_NOT_FOUND ((int32_t)0x80551614)
 
 static pthread_mutex_t lock=PTHREAD_MUTEX_INITIALIZER;
 static int next_id=1;
@@ -129,6 +130,11 @@ static ABI int32_t netctl_state(int32_t *state) { if (!state) return NET_CTL_INV
 static ABI int32_t netctl_info(int code,void *info) { (void)code; (void)info; return NET_CTL_NOT_CONNECTED; }
 static ABI int32_t netctl_register(void *cb,void *arg,int32_t *cid) { (void)cb; (void)arg; if (!cid) return NET_CTL_INVALID_ADDR; *cid=new_id(); return 0; }
 static ABI int32_t netctl_check(void) { return 0; }
+/* The last connection attempt failed because no cable is plugged in. */
+static ABI int32_t netctl_result(int32_t event,int32_t *error) {
+    (void)event; if (!error) return NET_CTL_INVALID_ADDR;
+    *error=NET_CTL_NOT_CONNECTED; return 0;
+}
 static ABI int32_t netctl_unregister(int cid) { (void)cid; return 0; }
 static ABI int32_t netctl_nat(uint32_t *info) {
     if (!info) return NET_CTL_INVALID_ADDR;
@@ -562,6 +568,11 @@ static ABI int32_t trophy_unlock_state(int32_t ctx,int32_t handle,uint32_t *flag
     return 0;
 }
 static ABI int32_t trophy_release(int32_t id) { return id>0 ? 0 : TROPHY_INVALID; }
+/* Same empty details as a trophy; no trophy pack is read, so there are no icons either. */
+static ABI int32_t trophy_group_info(int32_t ctx,int32_t handle,int32_t group,void *details,void *data) {
+    (void)group; return trophy_game_info(ctx,handle,details,data);
+}
+static ABI int32_t trophy_icon(void) { return TROPHY_ICON_NOT_FOUND; }
 
 /* ---- PlayGo: fully installed package ---- */
 static int playgo_handle, playgo_chunks=-1;
@@ -763,6 +774,46 @@ static const RuntimeExport exports[]={
     {"sceSharePlaySetProhibition",ok_void}, {"sceSharePlayGetCurrentConnectionInfo",np_signed_out},
     {"sceScreenShotEnable",ok_void}, {"sceScreenShotDisable",ok_void}, {"sceScreenShotSetOverlayImage",ok_void},
     {"sceSystemServiceReenableMusicPlayer",ok_void},
+    /* Gravity Rush Remastered (CUSA01113): synchronous NP requests, in-game messages, TUS,
+     * Facebook sharing, word filter and its own data dialogs. Offline, like the rest. */
+    {"sceScreenShotSetParam",ok_void}, {"sceNetCtlGetResult",netctl_result},
+    {"sceNpAuthCreateRequest",np_request},
+    {"sceNpInGameMessageInitialize",lib_init_id}, {"sceNpInGameMessageTerminate",ok_void},
+    {"sceNpInGameMessageCreateHandle",np_request}, {"sceNpInGameMessageDeleteHandle",ok_void},
+    {"sceNpInGameMessagePrepare",np_signed_out}, {"sceNpInGameMessageSendData",np_signed_out},
+    {"sceNpMatching2RegisterRoomMessageCallback",ok_void},
+    {"sceNpMatching2GetRoomDataExternalList",np_signed_out}, {"sceNpMatching2GetRoomDataInternal",np_signed_out},
+    {"sceNpMatching2GetRoomMemberDataInternal",np_signed_out}, {"sceNpMatching2GetUserInfoList",np_signed_out},
+    {"sceNpMatching2SetUserInfo",np_signed_out}, {"sceNpMatching2SendRoomMessage",np_signed_out},
+    {"sceNpMatching2SendRoomChatMessage",np_signed_out}, {"sceNpMatching2SignalingGetConnectionInfo",np_signed_out},
+    {"sceNpScoreGetFriendsRanking",np_signed_out}, {"sceNpScoreGetRankingByNpId",np_signed_out},
+    {"sceNpTusGetData",np_signed_out}, {"sceNpTusGetDataVUser",np_signed_out},
+    {"sceNpTusSetData",np_signed_out}, {"sceNpTusSetDataVUser",np_signed_out},
+    {"sceNpTusGetMultiSlotVariable",np_signed_out}, {"sceNpTusGetMultiSlotVariableVUser",np_signed_out},
+    {"sceNpTusSetMultiSlotVariable",np_signed_out}, {"sceNpTusSetMultiSlotVariableVUser",np_signed_out},
+    {"sceNpTssGetData",np_signed_out},
+    {"sceNpSnsFacebookCreateRequest",np_request}, {"sceNpSnsFacebookDeleteRequest",ok_void},
+    {"sceNpSnsFacebookGetAccessToken",np_signed_out},
+    {"sceNpSnsFacebookDialogInitialize",ok_void}, {"sceNpSnsFacebookDialogTerminate",ok_void},
+    {"sceNpSnsFacebookDialogOpen",np_signed_out}, {"sceNpSnsFacebookDialogUpdateStatus",ok_void},
+    {"sceNpSnsFacebookDialogGetResult",np_signed_out},
+    {"sceGameCustomDataDialogInitialize",ok_void}, {"sceGameCustomDataDialogTerminate",ok_void},
+    {"sceGameCustomDataDialogOpen",np_signed_out}, {"sceGameCustomDataDialogUpdateStatus",ok_void},
+    {"sceGameCustomDataDialogGetResult",np_signed_out},
+    {"sceNpLookupCreateRequest",np_request},
+    {"sceNpBandwidthTestInitStart",np_signed_out}, {"sceNpBandwidthTestGetStatus",np_signed_out},
+    {"sceNpBandwidthTestShutdown",ok_void},
+    {"sceNpWordFilterCreateTitleCtx",np_request}, {"sceNpWordFilterDeleteTitleCtx",ok_void},
+    {"sceNpWordFilterCreateRequest",np_request_ctx}, {"sceNpWordFilterCreateAsyncRequest",np_request_ctx},
+    {"sceNpWordFilterDeleteRequest",ok_void}, {"sceNpWordFilterAbortRequest",ok_void},
+    {"sceNpWordFilterPollAsync",np_poll},
+    {"sceNpWordFilterCensorComment",np_signed_out}, {"sceNpWordFilterSanitizeComment",np_signed_out},
+    {"sceNpWebApiCreateHandle",np_request}, {"sceNpWebApiDeleteHandle",ok_void},
+    {"sceNpWebApiCreateServicePushEventFilter",np_signed_out}, {"sceNpWebApiDeleteServicePushEventFilter",ok_void},
+    {"sceNpWebApiRegisterServicePushEventCallback",np_signed_out},
+    {"sceNpWebApiUnregisterServicePushEventCallback",ok_void},
+    {"sceNpTrophyGetGroupInfo",trophy_group_info}, {"sceNpTrophyGetGameIcon",trophy_icon},
+    {"sceNpTrophyGetGroupIcon",trophy_icon}, {"sceNpTrophyGetTrophyIcon",trophy_icon},
     {"scePthreadAttrSetguardsize",ok_void},
     {"sceVoiceCreatePort",voice_port}, {"sceVoiceDeletePort",ok_void},
     {"sceVoiceConnectIPortToOPort",ok_void}, {"sceVoiceDisconnectIPortFromOPort",ok_void},

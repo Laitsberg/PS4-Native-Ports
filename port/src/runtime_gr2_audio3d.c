@@ -352,6 +352,11 @@ static ABI int32_t a3d_port_push(uint32_t port_id, uint32_t blocking) {
     pthread_mutex_unlock(&p->push_lock);
     return 0;
 }
+/* Plays everything advanced so far and returns when it has been heard. */
+static ABI int32_t a3d_port_flush(uint32_t port_id) {
+    ONCE("sceAudio3dPortFlush");
+    return a3d_port_push(port_id,BLOCKING_SYNC);
+}
 static ABI int32_t a3d_port_get_queue_level(uint32_t port_id, uint32_t *level, uint32_t *available) {
     ONCE("sceAudio3dPortGetQueueLevel");
     Port *p=port_of(port_id);
@@ -377,6 +382,7 @@ static const RuntimeExport exports[]={
     {"sceAudio3dGetDefaultOpenParameters",a3d_get_default_open_parameters},
     {"sceAudio3dPortOpen",a3d_port_open}, {"sceAudio3dPortClose",a3d_port_close},
     {"sceAudio3dPortSetAttribute",a3d_port_set_attribute}, {"sceAudio3dPortPush",a3d_port_push},
+    {"sceAudio3dPortFlush",a3d_port_flush},
     {"sceAudio3dPortAdvance",a3d_port_advance}, {"sceAudio3dPortGetQueueLevel",a3d_port_get_queue_level},
     {"sceAudio3dObjectReserve",a3d_object_reserve}, {"sceAudio3dObjectUnreserve",a3d_object_unreserve},
     {"sceAudio3dObjectSetAttributes",a3d_object_set_attributes},

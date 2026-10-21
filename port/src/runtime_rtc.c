@@ -4,10 +4,12 @@
 #define _GNU_SOURCE
 #include "runtime.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 #define ERR_INVALID_POINTER ((int32_t)0x80B50002)
+#define ERR_BAD_PARSE ((int32_t)0x80B50007)
 #define ERR_INVALID_YEAR ((int32_t)0x80B50008)
 #define ERR_INVALID_MONTH ((int32_t)0x80B50009)
 #define ERR_INVALID_DAY ((int32_t)0x80B5000A)
@@ -198,6 +200,61 @@ static ABI int32_t rtc_rfc3339(char *out, const uint64_t *utc_tick, int32_t tz_m
     return 0;
 }
 
+/* Parsers return the UTC tick of a server timestamp. Offset is local minus UTC, in minutes. */
+static int month_of(const char *name) {
+    static const char months[]="JanFebMarAprMayJunJulAugSepOctNovDec";
+    for (int i=0;i<12;++i) if (!strncmp(name,months+3*i,3)) return i+1;
+    return 0;
+}
+static int32_t finish_parse(DateTime *t, int offset_minutes, uint64_t *tick) {
+    int32_t e=validate(t);
+    if (e) return e;
+    *tick=(uint64_t)((int64_t)to_tick(t)-(int64_t)offset_minutes*60000000);
+    return 0;
+}
+/* 2016-02-01T12:34:56[.fff](Z|+hh:mm|-hh:mm) */
+static int32_t parse_rfc3339(const char *s, uint64_t *tick) {
+    unsigned y,mo,d,h,mi,se; int n=0;
+    if (sscanf(s,"%4u-%2u-%2u%*1[Tt ]%2u:%2u:%2u%n",&y,&mo,&d,&h,&mi,&se,&n)!=6 || !n) return ERR_BAD_PARSE;
+    DateTime t={(uint16_t)y,(uint16_t)mo,(uint16_t)d,(uint16_t)h,(uint16_t)mi,(uint16_t)se,0};
+    s+=n;
+    if (*s=='.') {
+        uint32_t scale=100000;
+        for (++s; *s>='0' && *s<='9'; ++s, scale/=10) t.microsecond+=(uint32_t)(*s-'0')*scale;
+    }
+    int offset=0;
+    if (*s=='+' || *s=='-') {
+        unsigned oh,om;
+        if (sscanf(s+1,"%2u:%2u",&oh,&om)!=2) return ERR_BAD_PARSE;
+        offset=(int)(oh*60+om)*(*s=='-' ? -1 : 1);
+    } else if (*s!='Z' && *s!='z') return ERR_BAD_PARSE;
+    return finish_parse(&t,offset,tick);
+}
+static ABI int32_t rtc_parse_rfc3339(uint64_t *tick, const char *text) {
+    if (!tick || !text) return ERR_INVALID_POINTER;
+    return parse_rfc3339(text,tick);
+}
+/* RFC 3339, RFC 2822 ("Mon, 01 Feb 2016 12:34:56 +0900" or "GMT") or asctime. */
+static ABI int32_t rtc_parse_date_time(uint64_t *tick, const char *text) {
+    if (!tick || !text) return ERR_INVALID_POINTER;
+    if (text[0]>='0' && text[0]<='9') return parse_rfc3339(text,tick);
+    unsigned d,y,h,mi,se; char mon[4]={0}, zone[8]={0};
+    if (sscanf(text,"%*3s, %2u %3s %4u %2u:%2u:%2u %7s",&d,mon,&y,&h,&mi,&se,zone)>=6) {
+        int offset=0;
+        if (zone[0]=='+' || zone[0]=='-') {
+            unsigned z=(unsigned)strtoul(zone+1,NULL,10);
+            offset=(int)(z/100*60+z%100)*(zone[0]=='-' ? -1 : 1);
+        }
+        DateTime t={(uint16_t)y,(uint16_t)month_of(mon),(uint16_t)d,(uint16_t)h,(uint16_t)mi,(uint16_t)se,0};
+        return finish_parse(&t,offset,tick);
+    }
+    if (sscanf(text,"%*3s %3s %u %2u:%2u:%2u %4u",mon,&d,&h,&mi,&se,&y)==6) {
+        DateTime t={(uint16_t)y,(uint16_t)month_of(mon),(uint16_t)d,(uint16_t)h,(uint16_t)mi,(uint16_t)se,0};
+        return finish_parse(&t,0,tick);
+    }
+    return ERR_BAD_PARSE;
+}
+
 static const RuntimeExport exports[]={
     {"sceRtcGetCurrentClockLocalTime",rtc_current_local}, {"sceRtcGetCurrentClock",rtc_current_clock},
     {"sceRtcGetCurrentTick",rtc_current_tick}, {"sceRtcGetCurrentNetworkTick",rtc_current_tick},
@@ -209,5 +266,6 @@ static const RuntimeExport exports[]={
     {"sceRtcTickAddHours",rtc_add_hours}, {"sceRtcTickAddDays",rtc_add_days},
     {"sceRtcTickAddMonths",rtc_add_months}, {"sceRtcTickAddYears",rtc_add_years},
     {"sceRtcFormatRFC2822",rtc_rfc2822}, {"sceRtcFormatRFC3339",rtc_rfc3339},
+    {"sceRtcParseRFC3339",rtc_parse_rfc3339}, {"sceRtcParseDateTime",rtc_parse_date_time},
 };
 uintptr_t runtime_rtc_resolve(const char *name) { return RUNTIME_LOOKUP(exports,name); }

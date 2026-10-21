@@ -224,6 +224,18 @@ static ABI int32_t font_support_external_fonts(Library *library, uint32_t max_fo
     return FONT_OK;
 }
 
+/* Gravity Rush Remastered: system fonts are never opened (it ships its own) and glyphs are
+ * not cached per device, so both setup calls only check the library. */
+static ABI int32_t font_support_system_fonts(Library *library) {
+    once("sceFontSupportSystemFonts");
+    return library && library->magic==LIBRARY_MAGIC ? FONT_OK : ERR_INVALID_LIBRARY;
+}
+static ABI int32_t font_attach_device_cache_buffer(Library *library, void *buffer, uint32_t size) {
+    once("sceFontAttachDeviceCacheBuffer");
+    (void)buffer; (void)size;
+    return library && library->magic==LIBRARY_MAGIC ? FONT_OK : ERR_INVALID_LIBRARY;
+}
+
 static ABI int32_t font_create_renderer(const FontMemory *memory, const void *selection, uint64_t edition, Renderer **out) {
     once("sceFontCreateRendererWithEdition");
     if (!out) return ERR_INVALID_PARAMETER;
@@ -337,6 +349,16 @@ static ABI int32_t font_set_scale_pixel(Font *handle, float w, float h) {
     return font ? FONT_OK : ERR_INVALID_FONT_HANDLE;
 }
 
+static ABI int32_t font_get_scale_pixel(Font *handle, float *w, float *h) {
+    once("sceFontGetScalePixel");
+    if (!w && !h) return ERR_INVALID_PARAMETER;
+    pthread_mutex_lock(&lock);
+    Font *font=font_of(handle);
+    if (font) { if (w) *w=font->scale_w; if (h) *h=font->scale_h; }
+    pthread_mutex_unlock(&lock);
+    return font ? FONT_OK : ERR_INVALID_FONT_HANDLE;
+}
+
 static ABI int32_t font_setup_render_scale_pixel(Font *handle, float w, float h) {
     once("sceFontSetupRenderScalePixel");
     pthread_mutex_lock(&lock);
@@ -388,16 +410,18 @@ static ABI int32_t font_get_char_glyph_metrics(Font *handle, uint32_t code, Glyp
 }
 
 /* (font, previous code, code, kerning) at the render scale; zero without a 'kern' pair. */
-static ABI int32_t font_get_render_scaled_kerning(Font *handle, uint32_t previous, uint32_t code, Kerning *kerning) {
-    once("sceFontGetRenderScaledKerning");
+/* Kerning between two characters at the metrics scale (sceFontGetKerning) or the render
+ * scale (sceFontGetRenderScaledKerning). */
+static int32_t kerning_at(Font *handle, uint32_t previous, uint32_t code, Kerning *kerning, int render) {
     if (!kerning) return ERR_INVALID_PARAMETER;
     memset(kerning,0,sizeof(*kerning));
     pthread_mutex_lock(&lock);
     Font *font=font_of(handle);
     int32_t result=FONT_OK;
     if (!font) result=ERR_INVALID_FONT_HANDLE;
-    else if (!font->renderer) result=ERR_NOT_BOUND_RENDERER;
-    else if (previous && code && FT_HAS_KERNING(font->face) && !set_size(font,font->render_w,font->render_h)) {
+    else if (render && !font->renderer) result=ERR_NOT_BOUND_RENDERER;
+    else if (previous && code && FT_HAS_KERNING(font->face) &&
+             !set_size(font,render ? font->render_w : font->scale_w,render ? font->render_h : font->scale_h)) {
         FT_UInt left=FT_Get_Char_Index(font->face,previous), right=FT_Get_Char_Index(font->face,code);
         FT_Vector delta={0,0};
         if (left && right && !FT_Get_Kerning(font->face,left,right,FT_KERNING_UNFITTED,&delta)) {
@@ -407,6 +431,14 @@ static ABI int32_t font_get_render_scaled_kerning(Font *handle, uint32_t previou
     }
     pthread_mutex_unlock(&lock);
     return result;
+}
+static ABI int32_t font_get_render_scaled_kerning(Font *handle, uint32_t previous, uint32_t code, Kerning *kerning) {
+    once("sceFontGetRenderScaledKerning");
+    return kerning_at(handle,previous,code,kerning,1);
+}
+static ABI int32_t font_get_kerning(Font *handle, uint32_t previous, uint32_t code, Kerning *kerning) {
+    once("sceFontGetKerning");
+    return kerning_at(handle,previous,code,kerning,0);
 }
 
 static ABI void font_render_surface_init(RenderSurface *surface, void *buffer, int32_t width_byte,
@@ -530,6 +562,10 @@ static const RuntimeExport exports[]={
     {"sceFontGetHorizontalLayout",font_get_horizontal_layout},
     {"sceFontGetCharGlyphMetrics",font_get_char_glyph_metrics},
     {"sceFontGetRenderScaledKerning",font_get_render_scaled_kerning},
+    {"sceFontGetKerning",font_get_kerning},
+    {"sceFontGetScalePixel",font_get_scale_pixel},
+    {"sceFontSupportSystemFonts",font_support_system_fonts},
+    {"sceFontAttachDeviceCacheBuffer",font_attach_device_cache_buffer},
     {"sceFontRenderSurfaceInit",font_render_surface_init},
     {"sceFontRenderCharGlyphImageHorizontal",font_render_char_glyph_image_horizontal},
 };
