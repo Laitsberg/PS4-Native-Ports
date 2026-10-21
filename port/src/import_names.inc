@@ -259,6 +259,7 @@
 {"6ncge5+l5Qs#libScePad","scePadClose"},
 {"xk0AcarP3V4#libScePad","scePadOpen"},
 {"YndgXqQVV7c#libScePad","scePadReadState"},
+{"q1cHNfGycLI#libScePad","scePadRead"},
 {"gjP9-KQzoUk#libScePad","scePadGetControllerInformation"},
 {"rIZnR6eSpvk#libScePad","scePadResetOrientation"},
 {"r44mAxdSG+U#libScePad","scePadSetAngularVelocityDeadbandState"},
