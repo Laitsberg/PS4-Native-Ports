@@ -285,7 +285,10 @@ static ABI int32_t msg_result(unsigned char *out) { return dialog_result(1,out,0
  * Modes: 1 the list, 2 the game's message (buttonType @0, msg* @8), 3 a system message
  * (sysMsgType @0, value @8), 4 an error code (@0), 5 a progress bar (msg* @8).
  * The list and the messages the player answers are drawn over the game (tlggpu_save_*);
- * "saving" and "saved" show for a moment while the dialog answers at once, as before.
+ * "saved" shows for a moment while the dialog answers at once. A "loading/saving" system message
+ * runs while the game works and ends when it closes the dialog, as on the console (Gravity Rush
+ * Remastered took an immediate end as a failed load); if no close comes within
+ * SAVE_PROGRESS_TIMEOUT_MS, the dialog ends by itself so a game that waits for it goes on.
  * The result names the chosen save ("" = the new item). */
 #define SAVE_MODE_LIST 1
 #define SAVE_MODE_USER_MSG 2
@@ -298,12 +301,18 @@ static ABI int32_t msg_result(unsigned char *out) { return dialog_result(1,out,0
 #define SAVE_BUTTONS_OK_CANCEL 3
 #define SAVE_RESULT_CANCELED 1
 #define SAVE_BUTTON_NO 2
+#define SAVE_PROGRESS_TIMEOUT_MS 10000
 static struct {
     uint32_t mode, result;
     void *user_data;
     char dirs[32][32];
-    int dir_count, has_new, choosing, asking, kind, buttons, progress;
+    int dir_count, has_new, choosing, asking, kind, buttons, progress, working;
+    uint64_t working_since_ms;
 } save_dialog;
+static uint64_t save_now_ms(void) {
+    struct timespec t; clock_gettime(CLOCK_MONOTONIC,&t);
+    return (uint64_t)t.tv_sec*1000+(uint64_t)t.tv_nsec/1000000;
+}
 /* One save's text, date, size and picture for the dialog (strings live in the static buffers). */
 static unsigned char save_params[33][RUNTIME_SAVE_PARAM_SIZE];
 static char save_icons[33][720];
@@ -378,7 +387,11 @@ static ABI int32_t save_open(const unsigned char *p) {
         if (!sub) break;
         uint32_t kind; uint64_t value; memcpy(&kind,sub,4); memcpy(&value,sub+8,8);
         printf("Runtime: SaveDataDialog system message %u\n",kind);
-        if (kind==SAVE_SYSMSG_PROGRESS) { tlggpu_save_progress(save_dialog.kind,2,-1,""); break; }
+        if (kind==SAVE_SYSMSG_PROGRESS) {
+            tlggpu_save_progress(save_dialog.kind,2,-1,"");
+            save_dialog.progress=save_dialog.working=1; save_dialog.working_since_ms=save_now_ms();
+            return dialog_open_progress(2);
+        }
         if (kind==SAVE_SYSMSG_FINISHED) { tlggpu_save_toast(save_dialog.kind); break; }
         if (save_ask((int)kind,value,NULL,-1)) return 0;
         break;
@@ -418,6 +431,13 @@ static ABI int32_t save_status(void) {
                    choice<0 ? "" : save_dialog.dirs[0][0] ? save_dialog.dirs[0] : "new save");
         }
     }
+    if (save_dialog.working && dialogs[2].status==DIALOG_RUNNING &&
+        save_now_ms()-save_dialog.working_since_ms>=SAVE_PROGRESS_TIMEOUT_MS) {
+        save_dialog.working=0;
+        dialogs[2].status=DIALOG_FINISHED; dialogs[2].button=1;
+        tlggpu_save_progress(save_dialog.kind,0,0,NULL); save_dialog.progress=0;
+        printf("Runtime: SaveDataDialog progress message not closed in %d ms; ended it\n",SAVE_PROGRESS_TIMEOUT_MS);
+    }
     if (save_dialog.asking) {
         int answer=tlggpu_save_message_poll();
         if (answer!=-1) {
@@ -434,7 +454,7 @@ static ABI int32_t save_status(void) {
 static void save_dialog_gone(void) {
     if (save_dialog.choosing || save_dialog.asking) tlggpu_save_dialog_close();
     if (save_dialog.progress) tlggpu_save_progress(save_dialog.kind,0,0,NULL);
-    save_dialog.choosing=save_dialog.asking=save_dialog.progress=0;
+    save_dialog.choosing=save_dialog.asking=save_dialog.progress=save_dialog.working=0;
 }
 static ABI int32_t save_term(void) { save_dialog_gone(); return dialog_term(2); }
 static ABI int32_t save_close(void) {

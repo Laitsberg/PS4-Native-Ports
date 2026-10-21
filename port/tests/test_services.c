@@ -75,8 +75,9 @@ int main(void) {
     memcpy(&value,out+4,4); assert(value==SAVE_RESULT_CANCELED);
     assert(save_term()==0);
 
-    /* System messages: "overwrite?" waits for the player (No = button 2); "saving" and "saved"
-     * show for a moment and answer at once. sysMsgParam @88: type, value. */
+    /* System messages: "overwrite?" waits for the player (No = button 2); "loading/saving" runs
+     * until the game closes it; "saved" shows for a moment and answers at once.
+     * sysMsgParam @88: type, value. */
     unsigned char sysmsg[48]={0}, *sysmsg_ptr=sysmsg; unsigned char ask[128]={0};
     ask[52]=3; ask[56]=1; memcpy(ask+72,&items_ptr,8); memcpy(ask+88,&sysmsg_ptr,8);
     sysmsg[0]=3; message_next=-1;
@@ -88,7 +89,8 @@ int main(void) {
     assert(save_open(ask)==0 && save_status()==DIALOG_FINISHED && save_result(out)==0);
     memcpy(&value,out+8,4); assert(value==1);
     sysmsg[0]=5; progress_shown=0;
-    assert(save_open(ask)==0 && save_status()==DIALOG_FINISHED && progress_shown==2);
+    assert(save_open(ask)==0 && save_status()==DIALOG_RUNNING && progress_shown==2);
+    assert(save_close()==0 && save_status()==DIALOG_FINISHED && save_result(out)==0 && progress_shown==0);
     sysmsg[0]=7;
     assert(save_open(ask)==0 && save_status()==DIALOG_FINISHED && toasts==1);
     /* The game's own message with OK/Cancel: Cancel cancels the dialog. userMsgParam @80. */
