@@ -174,9 +174,23 @@ bool AvPlayerState::GetStreamInfo(u32 stream_index, AvPlayerStreamInfo& info) {
 }
 
 // Called inside GAME thread
+// tlg: Start() holds the source mutex exclusively, so it stops a playing source through
+// StopLocked(): Stop() takes the same mutex shared, which deadlocked the game thread when Gravity
+// Rush Remastered started its second movie. A Start() that comes while the source is still being
+// added is kept and done once the source is ready.
 bool AvPlayerState::Start() {
     std::unique_lock lock(m_source_mutex);
-    if (m_current_state == AvState::Ready || m_current_state == AvState::Stop || Stop()) {
+    if (m_up_source == nullptr) {
+        LOG_ERROR(Lib_AvPlayer, "Could not start playback. No source.");
+        return false;
+    }
+    if (m_current_state == AvState::Initial || m_current_state == AvState::AddingSource) {
+        LOG_INFO(Lib_AvPlayer, "Start requested while the source is being added; deferred.");
+        m_start_pending = true;
+        return true;
+    }
+    if (m_current_state == AvState::Ready || m_current_state == AvState::Stop || StopLocked()) {
+        m_start_pending = false;
         m_eof_stop_event_sent = false;
         SetState(AvState::Starting);
         if (!m_up_source->Start()) {
@@ -280,6 +294,12 @@ bool AvPlayerState::EnableStream(u32 stream_index) {
 // Called inside GAME thread
 bool AvPlayerState::Stop() {
     std::shared_lock lock(m_source_mutex);
+    return StopLocked();
+}
+
+// tlg: Stop() for callers that already hold m_source_mutex (shared or exclusive).
+bool AvPlayerState::StopLocked() {
+    m_start_pending = false;
     if (m_up_source == nullptr || m_current_state == AvState::Stop) {
         return false;
     }
@@ -466,6 +486,10 @@ void AvPlayerState::ProcessEvent() {
         if (found) {
             SetState(AvState::Ready);
             OnPlaybackStateChanged(AvState::Ready);
+            // tlg: the game asked to start before the source was ready (see Start()).
+            if (m_start_pending.exchange(false) && m_current_state == AvState::Ready) {
+                Start();
+            }
         } else {
             OnWarning(ORBIS_AVPLAYER_ERROR_NOT_SUPPORTED);
             SetState(AvState::Error);

@@ -2002,20 +2002,26 @@ static void wav_update(void) {
     fflush(wav);
 }
 
+/* Loudest sample written to render buffer 0 since the last summary (float output only). */
+static float stat_output_peak;
 static void summary(const System *s) {
     unsigned playing = 0, ready = 0;
     for (const Rack *r = s->racks; r; r = r->next)
         if (r->kind == KIND_SAMPLER)
             for (uint32_t i = 0; i < r->max_voices; ++i) { playing += r->voices[i]->state == ST_PLAYING; ready += r->voices[i]->state == ST_READY; }
-    note("render %llu: %u voices playing, %u ready; %llu plays, %llu finished, %llu blocks, %llu end-of-data renders, "
-         "%llu stream underruns, %llu user FX calls, %llu errors; render %.3f ms avg, %.3f ms max (grain %.2f ms)",
-         (unsigned long long)s->renders, playing, ready, (unsigned long long)stat_plays, (unsigned long long)stat_finished,
+    /* Printed without TLG_NGS2_LOG too (one line every 30 s): it shows whether the game plays
+     * anything and how loud the mix is when a player reports quiet or missing sound. */
+    printf("NGS2: render %llu: %u voices playing, %u ready; output peak %.3f; %llu plays, %llu finished, %llu blocks, "
+           "%llu end-of-data renders, %llu stream underruns, %llu user FX calls, %llu errors; render %.3f ms avg, "
+           "%.3f ms max (grain %.2f ms)\n",
+         (unsigned long long)s->renders, playing, ready, stat_output_peak, (unsigned long long)stat_plays, (unsigned long long)stat_finished,
          (unsigned long long)stat_blocks, (unsigned long long)stat_starved, (unsigned long long)stat_underruns,
          (unsigned long long)stat_user_fx, (unsigned long long)stat_errors,
          stat_render_count ? stat_render_ns / (double)stat_render_count / 1e6 : 0.0, stat_render_max_ns / 1e6,
          s->rate ? 1000.0 * s->grain / s->rate : 0.0);
     stat_render_ns = stat_render_max_ns = 0.0;
     stat_render_count = 0;
+    stat_output_peak = 0.0f;
 }
 
 static ABI int32_t ngs2_render(uintptr_t handle, const RenderBuffer *buffers, uint32_t count) {
@@ -2043,6 +2049,14 @@ static ABI int32_t ngs2_render(uintptr_t handle, const RenderBuffer *buffers, ui
             for (uint32_t i = 0; i < r->max_voices; ++i) process_sampler(r->voices[i], n);
     render_buses(s, n);
     for (uint32_t i = 0; i < count; ++i) write_output(&buffers[i], i, n);
+    if (count && buffers[0].buffer && buffers[0].waveform == WAVE_PCM_F32L && buffers[0].channels) {
+        uint64_t samples = buffers[0].size / 4u, limit = (uint64_t)n * buffers[0].channels;
+        const float *out = buffers[0].buffer;
+        for (uint64_t k = 0; k < samples && k < limit; ++k) {
+            float m = fabsf(out[k]);
+            if (m > stat_output_peak) stat_output_peak = m;
+        }
+    }
     if (wav && count && buffers[0].buffer && buffers[0].waveform == WAVE_PCM_F32L && buffers[0].channels) {
         uint64_t frames = buffers[0].size / (4u * buffers[0].channels);
         if (frames > n) frames = n;
@@ -2058,7 +2072,7 @@ static ABI int32_t ngs2_render(uintptr_t handle, const RenderBuffer *buffers, ui
     stat_render_ns += ns;
     if (ns > stat_render_max_ns) stat_render_max_ns = ns;
     ++stat_render_count;
-    if (log_enabled() && s->rate && !(s->renders % (30u * s->rate / n))) summary(s);
+    if (s->rate && !(s->renders % (30u * s->rate / n))) summary(s);
     pthread_mutex_unlock(&lock);
     return NGS2_OK;
 }
