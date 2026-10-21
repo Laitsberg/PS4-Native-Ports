@@ -71,6 +71,10 @@ uintptr_t runtime_gr2_np_resolve(const char *name);
 uintptr_t runtime_gr2_font_resolve(const char *name);
 uintptr_t runtime_gr2_json_resolve(const char *name);
 uintptr_t runtime_infamous_resolve(const char *name);
+/* libSceNgs2 (runtime_ngs2.c): the built-in mixer, unless TLG_NGS2=native links the firmware module. */
+int runtime_ngs2_native(void);
+uintptr_t runtime_ngs2_resolve(const char *name);
+void *runtime_ngs2_function(const char *symbol);
 uintptr_t runtime_gr2_audio3d_resolve(const char *name);
 void runtime_gr2_audio3d_report(void);
 void runtime_file_report(void);
