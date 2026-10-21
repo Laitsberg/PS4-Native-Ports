@@ -91,6 +91,12 @@ _ROWS = (
     ('read', 'FAST_READ_FAULT', 'bool', '1', ('Fast read faults', 'Resposta rápida a leituras'),
      ('Answers memory reads of the game quickly, without a round trip to the GPU thread. Off loses a lot of FPS.',
       'Responde rápido às leituras de memória do jogo, sem ir até a thread da GPU. Desligado perde muito FPS.'), {}),
+    ('read', 'STALE_READ_SITES', 'choice', 'off', ('Game reads that do not wait for the GPU', 'Leituras do jogo que não esperam a GPU'),
+     ('Listed game code reads GPU results from an earlier frame instead of waiting for the newest. First Light: the '
+      'sum at 0x197b10 waited ~12 ms about 50 times a second with "Precise" accuracy. Test whether smoke and light still look right.',
+      'O código do jogo listado lê resultados da GPU de um quadro anterior em vez de esperar os mais novos. First Light: a '
+      'soma em 0x197b10 esperava ~12 ms umas 50 vezes por segundo com a precisão "Preciso". Teste se a fumaça e a luz continuam certas.'),
+     {'choices': (('off', 'Off', 'Desligado'), ('0x197b10', 'First Light: 0x197b10', 'First Light: 0x197b10')), 'risky': True}),
     ('read', 'READBACK_LINEAR', 'bool', '0', ('Read back linear images', 'Ler de volta imagens lineares'),
      ('Also sends plain row-by-row images back to the CPU. Off for this game.',
       'Devolve à CPU também imagens simples, linha por linha. Desligado neste jogo.'), {'risky': True}),

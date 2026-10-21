@@ -100,6 +100,8 @@ public:
         }
         if constexpr (type == Type::GPU && enable) {
             NoteGpuBitsSet();
+            // New GPU data: a stale read allowed before (AllowStaleRead) does not cover it.
+            stale_ok.UnsetRange(start_page, end_page);
         }
         if constexpr (enable) {
             bits.SetRange(start_page, end_page);
@@ -119,6 +121,22 @@ public:
                 UpdateProtection<enable, true>();
             }
         }
+    }
+
+    /// tlg: lifts the read protection of GPU-modified pages without reading them back: the
+    /// guest reads what memory holds (TLG_STALE_READ_SITES, page_manager.cpp). The pages stay
+    /// GPU modified, so a guest write still reads them back first, and the next GPU write to
+    /// them protects them again.
+    void AllowStaleRead(VAddr address, u64 size) {
+        const size_t offset = address - cpu_addr;
+        const size_t start_page = SanitizeAddress(offset) / TRACKER_BYTES_PER_PAGE;
+        const size_t end_page =
+            Common::DivCeil(SanitizeAddress(offset + size), TRACKER_BYTES_PER_PAGE);
+        if (start_page >= NUM_PAGES_PER_REGION || end_page <= start_page) {
+            return;
+        }
+        stale_ok |= RegionBits(gpu, start_page, end_page);
+        UpdateProtection<false, true>();
     }
 
     /// tlg: after a guest write fault, also unprotects the other pages of the window that
@@ -238,12 +256,15 @@ private:
     template <bool track, bool is_read>
     void UpdateProtection() {
         RENDERER_TRACE;
-        RegionBits mask = is_read ? (~gpu ^ readable) : (cpu ^ writeable);
+        // tlg: stale_ok pages are readable although GPU modified (AllowStaleRead). Its bits
+        // are only set by AllowStaleRead (which unprotects) and cleared where the GPU sets
+        // `gpu` again (which protects), so each call still moves pages in one direction only.
+        RegionBits mask = is_read ? ((~gpu | stale_ok) ^ readable) : (cpu ^ writeable);
         if (mask.None()) {
             return;
         }
         if constexpr (is_read) {
-            readable = ~gpu;
+            readable = ~gpu | stale_ok;
         } else {
             writeable = cpu;
         }
@@ -352,6 +373,7 @@ private:
     RegionBits gpu;
     RegionBits writeable;
     RegionBits readable;
+    RegionBits stale_ok{}; ///< GPU-modified pages left readable on purpose (AllowStaleRead)
 };
 
 } // namespace VideoCore

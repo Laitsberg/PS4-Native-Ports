@@ -623,7 +623,7 @@
   "Asynchronous shader compile": "Фоновая компиляция шейдеров",
   "Compiles pipelines off the GPU thread: fewer hitches, but a draw whose pipeline is not ready yet is skipped and the object flashes for a frame. Off by default since 2026-10-16. Also in the in-game menu.": "Компилирует конвейеры вне потока GPU: меньше подтормаживаний, но отрисовка, чей конвейер ещё не готов, пропускается, и объект мигает на один кадр. Выключено по умолчанию с 16.10.2026. Есть и во внутриигровом меню.",
   "Deferred GPU readbacks": "Отложенные чтения с GPU",
-  "Only the thread that reads GPU results waits, not the whole GPU. Needs \"Precise\" GPU accuracy.": "Ждёт только поток, который читает результаты GPU, а не весь GPU. Нужна точность GPU «Точно».",
+  "Only the thread that reads GPU results waits, not the whole GPU. Not with \"Fast\" GPU accuracy.": "Ждёт только поток, который читает результаты GPU, а не весь GPU. Не работает с точностью GPU «Быстро».",
   "Stale readbacks": "Устаревшие чтения",
   "CPU reads see the last published GPU version instead of waiting (needs deferred readbacks).": "Чтения CPU видят последнюю опубликованную версию данных GPU вместо ожидания (нужны отложенные чтения).",
   "Load pipelines while playing": "Загружать конвейеры во время игры",
@@ -816,5 +816,7 @@
   "With deferred readbacks: a game thread that reads GPU results finishes the pending copy itself instead of a round trip through the GPU thread.": "При отложенных чтениях: поток игры, которому нужны результаты GPU, сам завершает ожидающее копирование, без обращения через поток видеокарты.",
   "Log which game code waits on the GPU": "Записывать, какой код игры ждёт GPU",
   "Every 5 s: the game instructions and memory blocks whose reads and writes waited on GPU results the longest. Costs a little FPS.": "Каждые 5 с: инструкции игры и блоки памяти, чьи чтения и записи дольше всего ждали результатов GPU. Немного снижает FPS.",
-  "60 FPS, saves and sound work. Online features (Treasure Hunt, PSN) are offline.": "60 FPS, сохранения и звук работают. Онлайн-функции (поиск сокровищ, PSN) недоступны — офлайн."
+  "60 FPS, saves and sound work. Online features (Treasure Hunt, PSN) are offline.": "60 FPS, сохранения и звук работают. Онлайн-функции (поиск сокровищ, PSN) недоступны — офлайн.",
+  "Game reads that do not wait for the GPU": "Чтения игры, которые не ждут GPU",
+  "Listed game code reads GPU results from an earlier frame instead of waiting for the newest. First Light: the sum at 0x197b10 waited ~12 ms about 50 times a second with \"Precise\" accuracy. Test whether smoke and light still look right.": "Указанный код игры читает результаты GPU из прошлого кадра, а не ждёт самые свежие. First Light: сумма по адресу 0x197b10 ждала ~12 мс примерно 50 раз в секунду при точности «Точно». Проверьте, что дым и свет выглядят правильно."
 }

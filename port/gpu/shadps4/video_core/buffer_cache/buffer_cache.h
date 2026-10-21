@@ -104,6 +104,9 @@ public:
     /// tlg: a CPU read fault on pages with no GPU-modified data: lift the read protection on the
     /// faulting thread instead of a round trip through the GPU command thread.
     void ReleaseReadProtection(VAddr device_addr, u64 size);
+    /// tlg: a CPU read fault from game code that does not need the newest GPU data
+    /// (TLG_STALE_READ_SITES): lift the read protection without reading the pages back.
+    void AllowStaleRead(VAddr device_addr, u64 size);
 
     /// Finds a buffer for the specified region.
     [[nodiscard]] std::pair<const Buffer*, u64> ObtainBuffer(VAddr device_addr, u32 size,

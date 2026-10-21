@@ -3862,7 +3862,7 @@ bool Rasterizer::OnWriteFault(VAddr addr, bool assume_locks) {
     return true;
 }
 
-bool Rasterizer::ReadMemory(VAddr addr, u64 size, bool assume_locks) {
+bool Rasterizer::ReadMemory(VAddr addr, u64 size, bool assume_locks, bool stale_ok) {
     DrainDrawPipe();
     if (!IsMapped(addr, size)) {
         // Not GPU mapped memory, can skip invalidation logic entirely.
@@ -3876,6 +3876,10 @@ bool Rasterizer::ReadMemory(VAddr addr, u64 size, bool assume_locks) {
     static const bool fast = [] { const char* e = std::getenv("TLG_FAST_READ_FAULT"); return !(e && *e == '0'); }();
     if (fast && !assume_locks && !buffer_cache.IsRegionGpuModified(addr, size)) {
         buffer_cache.ReleaseReadProtection(addr, size);
+    } else if (stale_ok && !assume_locks) {
+        // tlg: game code listed in TLG_STALE_READ_SITES reads what memory holds now instead of
+        // waiting for the GPU (after the image readbacks above, which are not skipped).
+        buffer_cache.AllowStaleRead(addr, size);
     } else if (!assume_locks && !image_readback && buffer_cache.TryEagerRead(addr, size)) {
         // tlg: served from the copy made at the last fence (TLG_EAGER_READBACK). Not after an
         // image readback: that resolved newer data the buffer copy would overwrite.

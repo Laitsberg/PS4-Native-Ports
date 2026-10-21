@@ -353,6 +353,10 @@ void BufferCache::ReleaseReadProtection(VAddr device_addr, u64 size) {
     memory_tracker->UnmarkRegionAsGpuModified(device_addr, size);
 }
 
+void BufferCache::AllowStaleRead(VAddr device_addr, u64 size) {
+    memory_tracker->AllowStaleRead(device_addr, size);
+}
+
 u64 BufferCache::CollectDownloads(const Buffer* arena, VAddr device_addr, u64 size,
                                   boost::container::small_vector<vk::BufferCopy, 8>& copies) {
     u64 total_size_bytes = 0;

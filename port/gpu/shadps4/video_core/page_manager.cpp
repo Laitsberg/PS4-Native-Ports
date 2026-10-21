@@ -176,6 +176,38 @@ struct PageManager::Impl {
         return handled;
     }
 
+    // tlg: TLG_STALE_READ_SITES="0x197b10,..." lists game instructions (guest offsets, as the
+    // fault profile prints them) whose read faults on GPU-modified memory do not wait for the
+    // GPU: the read gets what memory holds, the GPU result of an earlier frame (see
+    // BufferCache::AllowStaleRead). For reads such as an exposure average, where a frame-old
+    // value is fine and the wait (First Light: ~12 ms, ~50 a second) is not.
+    static bool StaleReadSite(void* context) {
+        static const std::vector<u64> sites = [] {
+            std::vector<u64> list;
+            const char* e = std::getenv("TLG_STALE_READ_SITES");
+            // Comma-separated hex offsets; anything else ("off") lists nothing.
+            for (const char* p = e; p && *p;) {
+                char* end = nullptr;
+                const u64 site = std::strtoull(p, &end, 16);
+                if (end == p || (*end && *end != ',')) {
+                    break;
+                }
+                list.push_back(site);
+                p = *end ? end + 1 : end;
+            }
+            if (!list.empty()) {
+                std::printf("GPU: %zu game read sites do not wait for GPU data (TLG_STALE_READ_SITES)\n",
+                            list.size());
+            }
+            return list;
+        }();
+        if (sites.empty()) {
+            return false;
+        }
+        const u64 site = GuestOffset(reinterpret_cast<u64>(Common::GetRip(context)));
+        return std::find(sites.begin(), sites.end(), site) != sites.end();
+    }
+
     static bool HandleGuestFault(void* context, VAddr addr) {
         // tlg: the draw recording thread handles its faults inline too (vk_draw_pipe.h).
         const auto is_gpu_thread = rasterizer->IsGpuSideThread();
@@ -188,7 +220,8 @@ struct PageManager::Impl {
         } else {
             TlgStats::read_faults.fetch_add(1, std::memory_order_relaxed);
             TlgStats::Timer timer{TlgStats::t_read_faults};
-            return rasterizer->ReadMemory(addr, 8, is_gpu_thread);
+            return rasterizer->ReadMemory(addr, 8, is_gpu_thread,
+                                          !is_gpu_thread && StaleReadSite(context));
         }
         return false;
     }
