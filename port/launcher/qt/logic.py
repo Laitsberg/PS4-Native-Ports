@@ -250,6 +250,26 @@ def detect_pad(devices_text=None):
     return None
 
 
+def folder_key(path):
+    """A game folder as compared in the library: 'S:/Games/x', 'S:\\Games\\x\\' and 's:\\games\\x'
+    are one folder on Windows (the folder dialog and saved settings spell paths differently)."""
+    return os.path.normcase(os.path.normpath(path)) if path else ''
+
+
+def library_paths(saved, current):
+    """The library folders, each once, in saved order; the current game folder first when it is
+    not saved yet."""
+    out, seen = [], set()
+    for path in saved:
+        key = folder_key(path) if isinstance(path, str) else ''
+        if key and key not in seen:
+            seen.add(key)
+            out.append(path)
+    if current and folder_key(current) not in seen:
+        out.insert(0, current)
+    return out
+
+
 def game_problem_text(t, problems):
     key, detail = problems[0]
     if key == 'missing':

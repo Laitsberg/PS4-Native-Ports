@@ -108,6 +108,22 @@ Fault profile (5 s): [W 0x1 x2]
 '''
 
 
+class LibraryTests(unittest.TestCase):
+    def test_one_tile_per_folder(self):
+        import ntpath
+        old = logic.os.path
+        logic.os.path = ntpath   # Windows path rules on any host
+        try:
+            saved = ['S:\\First light\\CUSA01113', 'S:/First light/CUSA00897', 's:\\first light\\cusa01113\\',
+                     'S:\\First light\\CUSA00897']
+            self.assertEqual(logic.library_paths(saved, 'S:/First light/CUSA01113'),
+                             ['S:\\First light\\CUSA01113', 'S:/First light/CUSA00897'])
+            self.assertEqual(logic.library_paths(saved[:1], 'D:\\J-STARS'), ['D:\\J-STARS', 'S:\\First light\\CUSA01113'])
+            self.assertEqual(logic.library_paths([], ''), [])
+        finally:
+            logic.os.path = old
+
+
 class LogSummaryTests(unittest.TestCase):
     def test_config_block_events_and_fps(self):
         s = report.summarize_log(LOG)

@@ -371,11 +371,7 @@ class Backend(QObject):
 
     # -- game library: the folders the player added, one tile each -----------------------------
     def _library_paths(self):
-        paths = [p for p in self.settings.get('library', []) if isinstance(p, str) and p]
-        current = self.settings.get('game_dir', '')
-        if current and current not in paths:
-            paths.insert(0, current)
-        return paths
+        return logic.library_paths(self.settings.get('library', []), self.settings.get('game_dir', ''))
 
     @Property('QVariantList', notify=gameDirChanged)
     def library(self):
@@ -383,7 +379,7 @@ class Backend(QObject):
         out = []
         for path in self._library_paths():
             about = games.info(path)
-            about['current'] = path == current
+            about['current'] = logic.folder_key(path) == logic.folder_key(current)
             about['present'] = Path(path, 'eboot.bin').is_file()
             about['note'] = self.t_.pick(about['note'], about['note'])   # en only; Russian via ru.json
             for k in ('cover', 'art'):
@@ -393,7 +389,7 @@ class Backend(QObject):
 
     @Slot(str)
     def selectGame(self, path):
-        if path and path != self.settings.get('game_dir', ''):
+        if path and logic.folder_key(path) != logic.folder_key(self.settings.get('game_dir', '')):
             self.chooseFolder(path)
 
     @Slot(str)
@@ -402,9 +398,9 @@ class Backend(QObject):
 
     @Slot(str)
     def removeGame(self, path):
-        paths = [p for p in self._library_paths() if p != path]
+        paths = [p for p in self._library_paths() if logic.folder_key(p) != logic.folder_key(path)]
         self.settings['library'] = paths
-        if self.settings.get('game_dir', '') == path:
+        if logic.folder_key(self.settings.get('game_dir', '')) == logic.folder_key(path):
             self.settings['game_dir'] = paths[0] if paths else ''
         tlg_run.save_settings(self.settings)
         self.refresh()
@@ -562,13 +558,15 @@ class Backend(QObject):
         path = QUrl(url).toLocalFile() if url.startswith('file:') else url
         if not path:
             return
+        path = os.path.normpath(path)   # one spelling per folder (the dialog gives '/', settings '\\')
         state, problems, _ = logic.game_state(self.settings, tlg_run.check_game(path) if 'problems' not in self.probes else [])
         blocking = tlg_run.blocking(problems)
         if blocking:
             self._message = self.t_('folder_rejected', why=logic.game_problem_text(self.t_, blocking))
         else:
             self.settings['game_dir'] = path
-            self.settings['library'] = [path] + [p for p in self._library_paths() if p != path]
+            self.settings['library'] = [path] + [p for p in self._library_paths()
+                                                 if logic.folder_key(p) != logic.folder_key(path)]
             tlg_run.save_settings(self.settings)
             self._message = self.t_('folder_saved')
         self.refresh()
