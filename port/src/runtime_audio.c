@@ -47,7 +47,7 @@ _Static_assert(sizeof(PortState)==32,"AudioOut port state layout");
 
 static pthread_mutex_t table_lock=PTHREAD_MUTEX_INITIALIZER;
 static Port ports[PORTS];
-static int initialized, sdl_ready=-1;
+static int initialized, sdl_ready=-1, device_channels=2, surround;
 static size_t buffers_out, ports_opened;
 
 static uint64_t now_ns(void) { struct timespec t; clock_gettime(CLOCK_MONOTONIC,&t); return (uint64_t)t.tv_sec*1000000000u+(uint64_t)t.tv_nsec; }
@@ -65,6 +65,18 @@ static int sdl_audio(void) {
         const char *mode=getenv("TLG_AUDIO");
         sdl_ready = (!mode || strcmp(mode,"none")) && SDL_InitSubSystem(SDL_INIT_AUDIO);
         printf("Runtime: audio backend %s\n", sdl_ready ? SDL_GetCurrentAudioDriver() : "timer (silent)");
+        if (sdl_ready) {
+            /* Windows often reports a 5.1/7.1 mix format for stereo headphones or speakers (a
+               surround speaker setup, a virtual-surround headset driver); 8ch sent there loses
+               the center/surround channels, where the game puts dialog and much of the mix.
+               So 8ch ports are folded to stereo here unless TLG_AUDIO_SURROUND=1. */
+            SDL_AudioSpec device; int device_frames;
+            if (SDL_GetAudioDeviceFormat(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,&device,&device_frames)) device_channels=device.channels;
+            const char *s=getenv("TLG_AUDIO_SURROUND");
+            surround=s && *s && strcmp(s,"0") && device_channels>2;
+            printf("Runtime: audio device %d ch, %s\n",device_channels,
+                   surround ? "surround output (TLG_AUDIO_SURROUND)" : "8ch ports downmixed to stereo");
+        }
     }
     return sdl_ready;
 }
@@ -137,9 +149,7 @@ static int32_t open_port(int32_t type, uint32_t length, uint32_t freq, uint32_t 
     p->sample_bytes=p->is_float ? 4 : 2; p->frames=(int)length; p->std_layout=format>=6;
     for (int c=0;c<8;++c) p->volume[c]=VOLUME_0DB;
     if (sdl_audio()) {
-        SDL_AudioSpec device; int device_frames;
-        p->downmix=p->channels==8 && SDL_GetAudioDeviceFormat(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,&device,&device_frames)
-                   && device.channels==2;
+        p->downmix=p->channels==8 && !surround;
         SDL_AudioSpec spec={p->is_float ? SDL_AUDIO_F32 : SDL_AUDIO_S16, p->downmix ? 2 : p->channels, 48000};
         p->stream=SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,&spec,NULL,NULL);
         if (p->stream) SDL_ResumeAudioStreamDevice(p->stream);
