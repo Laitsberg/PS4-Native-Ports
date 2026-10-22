@@ -22,6 +22,7 @@
 |---|---|---|
 | **inFAMOUS First Light** | CUSA00897 (EU), `eboot.bin` с APP_VER 01.04 | ✅ Проходится; 30–55 FPS, сохранения работают. Таблицы рекордов (Score Attack) не работают |
 | **J-STARS Victory VS+** | CUSA01661 (EU) 1.00 | ✅ Играбельно; геймпад, сохранения и видеоролики работают. Онлайн-бои, PSN и Share Play отключены |
+| **Gravity Rush Remastered** | CUSA01113 1.00 | ✅ Играбельно; 60 FPS, сохранения, звук и видеоролики работают. Онлайн-функции (поиск сокровищ, PSN) отключены |
 | **inFAMOUS Second Son** | CUSA00223 (US) 1.00 + обновление 1.07 (CUSA00004 тоже запускается) | ✅ Основная игра upstream; подробности в [руководстве Second Son](docs/SECOND_SON.md) |
 
 Другие версии (иной регион или патч) могут не запуститься: лаунчер предупредит, если `eboot.bin` не совпадает с проверенным. Можно добавить в библиотеку и другую игру с PS4: лаунчер разрешит запуск с пометкой «не проверено», но, скорее всего, игра остановится на системной функции, которой в порте ещё нет.
@@ -113,6 +114,7 @@ It is not a CPU emulator. The PS4 is x86-64, so the game's code (`eboot.bin`) ru
 |---|---|---|
 | **inFAMOUS First Light** | CUSA00897 (EU), `eboot.bin` with APP_VER 01.04 | ✅ Playable to the end; 30–55 FPS, saves work. Leaderboards (Score Attack) are offline |
 | **J-STARS Victory VS+** | CUSA01661 (EU) 1.00 | ✅ Playable; controller, saves and videos work. Online battles, PSN and Share Play are off |
+| **Gravity Rush Remastered** | CUSA01113 1.00 | ✅ Playable; 60 FPS, saves, sound and videos work. Online features (Treasure Hunt, PSN) are off |
 | **inFAMOUS Second Son** | CUSA00223 (US) 1.00 + update 1.07 (CUSA00004 also boots) | ✅ The upstream game; details in the [Second Son guide](docs/SECOND_SON.md#english) |
 
 Other versions (another region or patch) may not start: the launcher warns when the `eboot.bin` is not the tested one. Any other PS4 game can be added to the library too; the launcher lets it start as "untested", but it will most likely stop at a system function the port does not have yet.

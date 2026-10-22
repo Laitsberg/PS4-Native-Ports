@@ -40,6 +40,7 @@ class GamesTests(unittest.TestCase):
         self.assertIs(self.detect({'TITLE_ID': 'CUSA00223', 'TITLE': 'inFAMOUS Second Son'}), games.SECOND_SON)
         self.assertIs(self.detect({'TITLE_ID': 'CUSA00897', 'TITLE': 'inFAMOUS First Light'}), games.FIRST_LIGHT)
         self.assertIs(self.detect({'TITLE_ID': 'CUSA01661', 'TITLE': 'J-STARS Victory VS+'}), games.J_STARS)
+        self.assertIs(self.detect({'TITLE_ID': 'CUSA01113', 'TITLE': 'Gravity Rush™ Remastered'}), games.GRAVITY_RUSH)
 
     def test_other_region_by_title(self):
         self.assertIs(self.detect({'TITLE_ID': 'CUSA99999', 'TITLE': 'inFAMOUS™ First Light'}), games.FIRST_LIGHT)
@@ -49,7 +50,7 @@ class GamesTests(unittest.TestCase):
         self.assertEqual((game.title, game.save_serial, game.xpps_jobs), ('Some Game', 'CUSA12345', False))
 
     def test_sensor_mode_toggle(self):
-        self.assertEqual([g.motion_toggle for g in games.KNOWN], [True, True, False])
+        self.assertEqual([g.motion_toggle for g in games.KNOWN], [True, True, False, False])
         self.assertFalse(self.detect({'TITLE_ID': 'CUSA12345', 'TITLE': 'Some Game'}).motion_toggle)
 
     def test_no_folder_is_second_son(self):
@@ -58,6 +59,7 @@ class GamesTests(unittest.TestCase):
     def test_tested_eboots(self):
         self.assertTrue(games.eboot_status(games.FIRST_LIGHT, (0x6ffd70, 136_535_375))[0])
         self.assertFalse(games.eboot_status(games.J_STARS, (0x6ffd70, 136_535_375))[0])
+        self.assertTrue(games.eboot_status(games.GRAVITY_RUSH, (0x2f0, 37_451_368))[0])
 
     def test_set_serial(self):
         old = userdata.SERIAL

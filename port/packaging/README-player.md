@@ -14,6 +14,7 @@
 |---|---|---|
 | inFAMOUS First Light | CUSA00897 (EU), APP_VER 01.04 | таблицы рекордов |
 | J-STARS Victory VS+ | CUSA01661 (EU) 1.00 | онлайн-бои, PSN, Share Play |
+| Gravity Rush Remastered | CUSA01113 1.00 | онлайн-функции, PSN |
 | inFAMOUS Second Son | CUSA00223 (US) 1.00 + обновление 1.07 | — |
 
 ### Папка с игрой
@@ -51,6 +52,7 @@ Windows 10 (1903+) / 11, 64 бита; видеокарта с Vulkan 1.3 (рек
 |---|---|---|
 | inFAMOUS First Light | CUSA00897 (EU), APP_VER 01.04 | leaderboards |
 | J-STARS Victory VS+ | CUSA01661 (EU) 1.00 | online battles, PSN, Share Play |
+| Gravity Rush Remastered | CUSA01113 1.00 | online features, PSN |
 | inFAMOUS Second Son | CUSA00223 (US) 1.00 + update 1.07 | — |
 
 ### Game folder

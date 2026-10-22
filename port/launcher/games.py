@@ -49,7 +49,14 @@ J_STARS = Game(
     tested={(0x305890, 8_583_040): 'EU 1.00'},
     note='Online battles, PSN dialogs and Share Play are offline.')
 
-KNOWN = (SECOND_SON, FIRST_LIGHT, J_STARS)
+GRAVITY_RUSH = Game(
+    key='gravity-rush', title='Gravity Rush Remastered', rail=('Gravity Rush', 'Remastered · PC'),
+    title_ids=frozenset({'CUSA01113'}), names=('gravity rush',),
+    save_serial='CUSA01113',
+    tested={(0x2f0, 37_451_368): '1.00'},
+    note='60 FPS, saves and sound work. Online features (Treasure Hunt, PSN) are offline.')
+
+KNOWN = (SECOND_SON, FIRST_LIGHT, J_STARS, GRAVITY_RUSH)
 DEFAULT = SECOND_SON
 
 

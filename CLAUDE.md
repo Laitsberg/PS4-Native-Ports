@@ -45,6 +45,7 @@ code 20** and a `STOP` line naming it.
 | inFAMOUS Second Son | CUSA00223 / CUSA00004 | `0x61dfd0`, 133846143 (1.07) | upstream game; xpps shader precompile, mods |
 | inFAMOUS First Light | CUSA00897 (EU) | `0x6ffd70`, 136535375 (APP_VER 01.04) | 30–55 FPS, two ~13 s freezes on loads, saves OK; leaderboards offline; L3+R3 sensor mode kept |
 | J-STARS Victory VS+ | CUSA01661 (EU 1.00) | `0x305890`, 8583040 | locked 30 FPS, stable; online/Share Play offline; L3+R3 sensor mode off (`ISS_MOTION_TOGGLE=off`) |
+| Gravity Rush Remastered | CUSA01113 (1.00) | `0x2f0`, 37451368 | 60 FPS, saves OK; NGS2 mixer from HayatoG/gr2_pc; 8ch audio folded to stereo (`TLG_AUDIO_SURROUND=1` keeps 7.1); online offline; sensor mode off |
 
 Unknown games get an "untested" profile from `param.sfo` and may still be launched.
 
